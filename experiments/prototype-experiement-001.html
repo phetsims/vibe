@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test of forEach</title>
+</head>
+<body>
+<h1>Test of some kind</h1>
+
+<p id='textDiv'>If you see this text, the JavaScript hasn't done what was expected (yet).</p>
+
+<script>
+  var helloFunc = function() {
+    var text = "Hello " + helloFunc.name;
+    console.log( text );
+    document.getElementById( 'textDiv' ).innerHTML = text;
+  }
+  helloFunc.name = 'Budster';
+  helloFunc();
+</script>
+
+</body>
+</html>
