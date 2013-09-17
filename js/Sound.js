@@ -2,7 +2,11 @@
 
 /**
  * Type for loading a playing sounds, works on multiple platforms and supports
- * embedded base64 data.
+ * embedded base64 data.  This uses Web Audio when available, primarily
+ * because the webkit platforms were failing with cross-domain errors when
+ * attempting to load audio data from embedded data URIs.  This was occurring
+ * in mid-September 2013.  Simplification may be possible if the cross-domain
+ * issue goes away at some point in the future.
  *
  * TODO: Do we want to specify just the stem of the file name and have this
  * code figure out whether to use mp3 or ogg?
@@ -11,7 +15,7 @@ define( function( require ) {
   'use strict';
 
   // Imports
-  var base64Binary = require( 'base64Binary' );
+  var base64Binary = require( 'VIBE/base64Binary' );
 
   /**
    * @param soundName - name of this sound no path name, e.g. "ding.mp3".
@@ -117,7 +121,13 @@ define( function( require ) {
    * Stop the sound if it is currently playing.
    */
   Sound.prototype.stop = function() {
-    // TODO: TBD.
+    if ( this.audioContext ) {
+
+    }
+    else {
+      this.sound.pause();
+      this.sound.currentTime = 0;
+    }
   };
 
   return Sound;
