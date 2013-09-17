@@ -13,12 +13,12 @@ define( function( require ) {
     embeddedSound.play();
   };
 
-//  var relativePathSound = new Sound( 'relative-path-sound.mp3' );
-//  var relativePathAudioButton = document.getElementById( 'relativePathAudioButton' );
-//  relativePathAudioButton.onclick = function() {
-//    relativePathSound.stop();
-//    relativePathSound.play();
-//  };
+  var relativePathSound = new Sound( 'relative-path-sound.mp3' );
+  var relativePathAudioButton = document.getElementById( 'relativePathAudioButton' );
+  relativePathAudioButton.onclick = function() {
+    relativePathSound.stop();
+    relativePathSound.play();
+  };
 
 } );
 

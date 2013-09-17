@@ -14,7 +14,7 @@ define( function( require ) {
   var base64Binary = require( 'base64Binary' );
 
   // Local constants
-  var SOUND_RESOURCE_PATH = 'sound/';
+  var SOUND_RESOURCE_PATH = 'sounds/';
 
   /**
    * @param soundName - name of this sound no path name, e.g. "ding.mp3".
@@ -37,6 +37,7 @@ define( function( require ) {
     }
 
     // Locate the sound data.
+    debugger;
     this.sound = document.getElementById( SOUND_RESOURCE_PATH + soundName );
     if ( this.sound !== null ) {
       // Sound data is already in the DOM.  For PhET's purposes, it should be
@@ -58,12 +59,18 @@ define( function( require ) {
 
     // Load the sound. TODO: Consider moving this to sim preload phase.
     if ( this.audioContext ) {
-      debugger;
       var arrayBuff;
       if ( this.sound.getAttribute( 'src' ).match( /^data/ ) !== null ) {
         // We're working with base64 data, so we need to decode it.
         var soundData = this.sound.getAttribute( 'src' ).replace( new RegExp( '^.*,' ), '' );
         arrayBuff = base64Binary.decodeArrayBuffer( soundData );
+        this.audioContext.decodeAudioData( arrayBuff,
+          function( audioData ) {
+            self.audioBuffer = audioData;
+          },
+          function() {
+            console.log( "Error: Unable to decode audio data." )
+          } );
       }
       else {
         // Load via relative URL path.
@@ -71,24 +78,22 @@ define( function( require ) {
         request.open( 'GET', SOUND_RESOURCE_PATH + soundName, true );
         request.responseType = 'arraybuffer';
         request.onload = function() {
-          // Decode asynchronously
-          self.audioContext.decodeAudioData(
-            request.response,
-            function( buffer ) {
-              arrayBuff = buffer;
-            }
+          // Decode the audio data asynchronously
+          debugger;
+          self.audioContext.decodeAudioData( request.response,
+            function( audioData ) {
+              self.audioBuffer = audioData;
+            },
+            function() { console.log( "Error loading and decoding sound, sound name: " + soundName ); }
           );
         }
+        request.onerror = function() {
+          debugger;
+          console.log( "Error occurred on request (delete this code when debugged)" );
+        }
+
         request.send();
       }
-
-      this.audioContext.decodeAudioData( arrayBuff,
-        function( audioData ) {
-          self.audioBuffer = audioData;
-        },
-        function() {
-          console.log( "Error: Unable to decode audio data." )
-        } );
     }
   }
 
