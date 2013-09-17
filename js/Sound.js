@@ -1,16 +1,28 @@
 // Copyright 2002-2013, University of Colorado Boulder
 
+/**
+ * Type for loading a playing sounds, works on multiple platforms and supports
+ * embedded base64 data.
+ *
+ * TODO: Do we want to specify just the stem of the file name and have this
+ * code figure out whether to use mp3 or ogg?
+ */
 define( function( require ) {
   'use strict';
 
   // Imports
   var base64Binary = require( 'base64Binary' );
 
+  // Local constants
+  var SOUND_RESOURCE_PATH = 'sound/';
+
   /**
-   * @param soundID ID in the DOM for the sound.
+   * @param soundName - name of this sound no path name, e.g. "ding.mp3".
    * @constructor
    */
-  function Sound( soundID ) {
+  function Sound( soundName ) {
+
+    var self = this;
 
     // Set up the audio context.  This is only used if the Web Audio API is
     // supported.
@@ -24,12 +36,52 @@ define( function( require ) {
       this.audioContext = undefined;
     }
 
-    // Load the sound.
-    this.sound = document.getElementById( soundID );
+    // Locate the sound data.
+    this.sound = document.getElementById( SOUND_RESOURCE_PATH + soundName );
+    if ( this.sound !== null ) {
+      // Sound data is already in the DOM.  For PhET's purposes, it should be
+      // encoded as base64 data.  If it's not, throw an error.
+      if ( this.sound.getAttribute( 'src' ).match( /^data/ ) === null ) {
+        throw new Error( "Embedded audio data must be encoded as base64." );
+      }
+    }
+    else {
+      // Set up an audio element in the DOM with a relative path.
+      this.sound = document.createElement( 'audio' );
+      this.sound.setAttribute( 'src', 'sound' + soundName );
+    }
+
+    if ( this.sound === null ) {
+      // Sound not found.
+      throw new Error( "The specified sound was not found: " + soundName );
+    }
+
+    // Load the sound. TODO: Consider moving this to sim preload phase.
     if ( this.audioContext ) {
-      var soundData = this.sound.getAttribute( 'src' ).replace( new RegExp( '^.*,' ), '' );
-      var arrayBuff = base64Binary.decodeArrayBuffer( soundData );
-      var self = this;
+      debugger;
+      var arrayBuff;
+      if ( this.sound.getAttribute( 'src' ).match( /^data/ ) !== null ) {
+        // We're working with base64 data, so we need to decode it.
+        var soundData = this.sound.getAttribute( 'src' ).replace( new RegExp( '^.*,' ), '' );
+        arrayBuff = base64Binary.decodeArrayBuffer( soundData );
+      }
+      else {
+        // Load via relative URL path.
+        var request = new XMLHttpRequest();
+        request.open( 'GET', SOUND_RESOURCE_PATH + soundName, true );
+        request.responseType = 'arraybuffer';
+        request.onload = function() {
+          // Decode asynchronously
+          self.audioContext.decodeAudioData(
+            request.response,
+            function( buffer ) {
+              arrayBuff = buffer;
+            }
+          );
+        }
+        request.send();
+      }
+
       this.audioContext.decodeAudioData( arrayBuff,
         function( audioData ) {
           self.audioBuffer = audioData;

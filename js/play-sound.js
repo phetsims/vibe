@@ -6,11 +6,19 @@ define( function( require ) {
   // Imports
   var Sound = require( 'Sound' );
 
-  var sound = new Sound( 'sound.mp3' );
-  var button = document.getElementById( 'audioButton' );
-  button.onclick = function() {
-    sound.stop();
-    sound.play();
+  var embeddedSound = new Sound( 'embedded-sound.mp3' );
+  var embeddedAudioButton = document.getElementById( 'embeddedAudioButton' );
+  embeddedAudioButton.onclick = function() {
+    embeddedSound.stop();
+    embeddedSound.play();
   };
+
+//  var relativePathSound = new Sound( 'relative-path-sound.mp3' );
+//  var relativePathAudioButton = document.getElementById( 'relativePathAudioButton' );
+//  relativePathAudioButton.onclick = function() {
+//    relativePathSound.stop();
+//    relativePathSound.play();
+//  };
+
 } );
 
