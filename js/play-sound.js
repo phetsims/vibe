@@ -6,19 +6,18 @@ define( function( require ) {
   // Imports
   var Sound = require( 'Sound' );
 
-  var embeddedSound = new Sound( 'embedded-sound.mp3' );
+  var embeddedSound = new Sound( 'sounds/embedded-sound.mp3' );
   var embeddedAudioButton = document.getElementById( 'embeddedAudioButton' );
   embeddedAudioButton.onclick = function() {
     embeddedSound.stop();
     embeddedSound.play();
   };
 
-  var relativePathSound = new Sound( 'relative-path-sound.mp3' );
+  var relativePathSound = new Sound( 'sounds/relative-path-sound.mp3' );
   var relativePathAudioButton = document.getElementById( 'relativePathAudioButton' );
   relativePathAudioButton.onclick = function() {
     relativePathSound.stop();
     relativePathSound.play();
   };
-
 } );
 
