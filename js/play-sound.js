@@ -4,7 +4,7 @@ define( function( require ) {
   'use strict';
 
   // Imports
-  var Sound = require( 'Sound' );
+  var Sound = require( 'VIBE/Sound' );
 
   var embeddedSound = new Sound( 'sounds/embedded-sound.mp3' );
   var embeddedAudioButton = document.getElementById( 'embeddedAudioButton' );
