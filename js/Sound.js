@@ -141,7 +141,7 @@ define( function( require ) {
   // See http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api
   // Note: This requires the user to touch the screen before audio can be played
   if ( platform.mobileSafari ) {
-    var silence = new Sound( 'sounds/silence-500ms.mp3' );
+    var silence = new Sound( 'sounds/silence-100ms.mp3' );
     var playSilence = function() {
       silence.play();
       window.removeEventListener( 'touchstart', playSilence, false );
