@@ -20,6 +20,15 @@ define( function( require ) {
     relativePathSound.play();
   };
 
+  window.requestAnimFrame = (function() {
+    return  window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            function( callback ) {
+              window.setTimeout( callback, 1000 / 60 );
+            };
+  })();
+
   //Play a sound in the animation frame
   var animationFrameAudioButton = document.getElementById( 'animationFrameAudioButton' );
   animationFrameAudioButton.onclick = function() {
@@ -33,7 +42,7 @@ define( function( require ) {
         played = true;
       }
       else {
-        window.requestAnimationFrame( animloop );
+        window.requestAnimFrame( animloop );
       }
     })();
   };
