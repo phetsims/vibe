@@ -7,13 +7,13 @@
  */
 
 require.config( {
-  deps: ["js/play-sound"],
+  deps: ["play-sound"],
 
   config: {
   },
 
   paths: {
-    VIBE: '../vibe/js'
+    VIBE: '../../vibe/js'
   },
 
   urlArgs: new Date().getTime()  // cache buster to make browser refresh load all included scripts
