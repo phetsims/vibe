@@ -19,5 +19,23 @@ define( function( require ) {
     relativePathSound.stop();
     relativePathSound.play();
   };
+
+  //Play a sound in the animation frame
+  var animationFrameAudioButton = document.getElementById( 'animationFrameAudioButton' );
+  animationFrameAudioButton.onclick = function() {
+    var start = Date.now();
+    var played = false;
+    (function animloop() {
+      var now = Date.now();
+
+      if ( now - start > 1000 && !played ) {
+        embeddedSound.play();
+        played = true;
+      }
+      else {
+        window.requestAnimationFrame( animloop );
+      }
+    })();
+  };
 } );
 
