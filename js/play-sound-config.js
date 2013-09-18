@@ -13,6 +13,7 @@ require.config( {
   },
 
   paths: {
+    PHET_CORE: '../../phet-core/js',
     VIBE: '../../vibe/js'
   },
 

@@ -16,6 +16,7 @@ define( function( require ) {
 
   // Imports
   var base64Binary = require( 'VIBE/base64Binary' );
+  var platform = require( 'PHET_CORE/platform' );
 
   // Set up a single audio context that will be used by all sounds when
   // using Web Audio API.
@@ -132,6 +133,21 @@ define( function( require ) {
       this.sound.currentTime = 0;
     }
   };
+
+  // Workaround for iOS+Safari: In this situation, we must play an audio file
+  // from a thread initiated by a user event such as touchstart before any
+  // sounds will play. This is impossible with scenery, since all scenery
+  // events are batched and dispatched from the animation loop.
+  // See http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api
+  // Note: This requires the user to touch the screen before audio can be played
+  if ( platform.mobileSafari ) {
+    var silence = new Sound( 'sounds/silence-500ms.mp3' );
+    var playSilence = function() {
+      silence.play();
+      window.removeEventListener( 'touchstart', playSilence, false );
+    };
+    window.addEventListener( 'touchstart', playSilence, false );
+  }
 
   return Sound;
 } );
