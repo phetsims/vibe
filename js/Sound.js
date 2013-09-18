@@ -17,6 +17,16 @@ define( function( require ) {
   // Imports
   var base64Binary = require( 'VIBE/base64Binary' );
 
+  // Set up a single audio context that will be used by all sounds when
+  // using Web Audio API.
+  var audioContext;
+  if ( 'AudioContext' in window ) {
+    var audioContext = new AudioContext();
+  }
+  else if ( 'webkitAudioContext' in window ) {
+    var audioContext = new webkitAudioContext();
+  }
+
   /**
    * @param soundName - name of this sound no path name, e.g. "ding.mp3".
    * @constructor
@@ -24,17 +34,6 @@ define( function( require ) {
   function Sound( soundName ) {
 
     var self = this;
-
-    // Determine whether Web Audio API is supported and set up an audio context if so.
-    if ( 'AudioContext' in window ) {
-      this.audioContext = new AudioContext();
-    }
-    else if ( 'webkitAudioContext' in window ) {
-      this.audioContext = new webkitAudioContext();
-    }
-    else {
-      this.audioContext = undefined;
-    }
 
     // Locate the sound data.
     this.sound = document.getElementById( soundName );
@@ -49,6 +48,7 @@ define( function( require ) {
       // Set up an audio element in the DOM with a relative path.
       this.sound = document.createElement( 'audio' );
       this.sound.setAttribute( 'src', soundName );
+      this.sound.load();
     }
 
     if ( this.sound === null ) {
@@ -57,18 +57,18 @@ define( function( require ) {
     }
 
     // Load the sound. TODO: Consider moving this to sim preload phase.
-    if ( this.audioContext ) {
+    if ( audioContext ) {
       var arrayBuff;
       if ( this.sound.getAttribute( 'src' ).match( /^data:/ ) !== null ) {
         // We're working with base64 data, so we need to decode it.
         var soundData = this.sound.getAttribute( 'src' ).replace( new RegExp( '^.*,' ), '' );
         arrayBuff = base64Binary.decodeArrayBuffer( soundData );
-        this.audioContext.decodeAudioData( arrayBuff,
+        audioContext.decodeAudioData( arrayBuff,
           function( audioData ) {
             self.audioBuffer = audioData;
           },
           function() {
-            console.log( "Error: Unable to decode audio data." )
+            console.log( "Error: Unable to decode audio data." );
           } );
       }
       else {
@@ -78,7 +78,7 @@ define( function( require ) {
         request.responseType = 'arraybuffer';
         request.onload = function() {
           // Decode the audio data asynchronously
-          self.audioContext.decodeAudioData( request.response,
+          audioContext.decodeAudioData( request.response,
             function( audioData ) {
               self.audioBuffer = audioData;
             },
@@ -98,11 +98,11 @@ define( function( require ) {
    * Plays the sound using the Web Audio API if available or HTML5 audio if not.
    */
   Sound.prototype.play = function() {
-    if ( this.audioContext ) {
+    if ( audioContext ) {
       // Use the Web Audio API.
-      this.soundSource = this.audioContext.createBufferSource();
+      this.soundSource = audioContext.createBufferSource();
       this.soundSource.buffer = this.audioBuffer;
-      this.soundSource.connect( this.audioContext.destination );
+      this.soundSource.connect( audioContext.destination );
 
       if ( 'AudioContext' in window ) {
         this.soundSource.start( 0 );
@@ -121,8 +121,11 @@ define( function( require ) {
    * Stop the sound if it is currently playing.
    */
   Sound.prototype.stop = function() {
-    if ( this.audioContext ) {
-
+    if ( 'AudioContext' in window ) {
+      this.soundSource.start( 0 );
+    }
+    else if ( 'webkitAudioContext' in window ) {
+      this.soundSource.noteOff( 0 );
     }
     else {
       this.sound.pause();
