@@ -122,10 +122,10 @@ define( function( require ) {
    */
   Sound.prototype.stop = function() {
     if ( 'AudioContext' in window ) {
-      this.soundSource.start( 0 );
+      // TODO: TBD
     }
     else if ( 'webkitAudioContext' in window ) {
-      this.soundSource.noteOff( 0 );
+      // TODO: TBD
     }
     else {
       this.sound.pause();
