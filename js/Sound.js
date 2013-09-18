@@ -113,8 +113,6 @@ define( function( require ) {
     }
     else {
       // Use the HTML5 API.
-      alert( "About to play sound with HTML API" );
-      alert( "sound = " + this.sound );
       this.sound.play();
     }
   };
