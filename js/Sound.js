@@ -32,15 +32,35 @@ define( function( require ) {
   }
 
   /**
-   * @param soundName - name of this sound no path name, e.g. "ding.mp3".
+   * @param {String|{url|base64}} soundURL - name of this sound no path name, e.g. "ding.mp3".
+   * If it is an object, it has either a url or base64 field, depending on whether it is running at requirejs development time or build time.
    * @constructor
    */
   function Sound( soundName ) {
+    var soundURL = soundName;
+
+    //TODO: Switch over to this style for the constructor once clients are all using it.
+    if ( typeof(soundName) === 'object' ) {
+
+      //Load the path from the requirejs development option
+      if ( soundName.url ) {
+        soundURL = soundName.url;
+      }
+
+      //Load the base64 text
+      else if ( soundName.base64 ) {
+        var base64 = soundName.base64;
+
+      }
+      else {
+        throw new Error( 'Sound argument incorrect' );
+      }
+    }
 
     var self = this;
 
     // Locate the sound data.
-    this.sound = document.getElementById( soundName );
+    this.sound = document.getElementById( soundURL );
     if ( this.sound !== null ) {
       // Sound data is already in the DOM.  For PhET's purposes, it should be
       // encoded as base64 data.  If it's not, throw an error.
@@ -50,25 +70,33 @@ define( function( require ) {
     }
     else {
       // Set up an audio element in the DOM with a relative path.
-      this.sound = document.createElement( 'audio' );
-      this.sound.setAttribute( 'src', soundName );
-      this.sound.load();
+      //TODO: This is for backward compatibility, can be deleted once we have cut over to audio! plugin
+      if ( !base64 ) {
+        this.sound = document.createElement( 'audio' );
+        this.sound.setAttribute( 'src', soundURL );
+        this.sound.load();
+      }
     }
 
-    if ( this.sound === null ) {
+    if ( this.sound === null && !base64 ) {
       // Sound not found.
-      throw new Error( "The specified sound was not found: " + soundName );
+      throw new Error( "The specified sound was not found: " + soundURL );
     }
 
     // Load the sound. TODO: Consider moving this to sim preload phase.
     if ( audioContext ) {
       var arrayBuff;
-      if ( this.sound.getAttribute( 'src' ).match( /^data:/ ) !== null ) {
+
+//      debugger;
+      if ( base64 || this.sound.getAttribute( 'src' ).match( /^data:/ ) !== null ) {
         // We're working with base64 data, so we need to decode it.
-        var soundData = this.sound.getAttribute( 'src' ).replace( new RegExp( '^.*,' ), '' );
+
+        //The regular expression removes the mime header
+        var soundData = (base64 ? base64 : this.sound.getAttribute( 'src' )).replace( new RegExp( '^.*,' ), '' );
         arrayBuff = base64Binary.decodeArrayBuffer( soundData );
         audioContext.decodeAudioData( arrayBuff,
           function( audioData ) {
+//            debugger;
             self.audioBuffer = audioData;
           },
           function() {
@@ -78,7 +106,7 @@ define( function( require ) {
       else {
         // Sound is not yet in DOM, try loading via relative URL path.
         var request = new XMLHttpRequest();
-        request.open( 'GET', soundName, true );
+        request.open( 'GET', soundURL, true );
         request.responseType = 'arraybuffer';
         request.onload = function() {
           // Decode the audio data asynchronously
@@ -86,7 +114,7 @@ define( function( require ) {
             function( audioData ) {
               self.audioBuffer = audioData;
             },
-            function() { console.log( "Error loading and decoding sound, sound name: " + soundName ); }
+            function() { console.log( "Error loading and decoding sound, sound name: " + soundURL ); }
           );
         };
         request.onerror = function() {
