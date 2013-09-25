@@ -15,7 +15,7 @@ define( function( require ) {
   'use strict';
 
   // Imports
-  var base64Binary = require( 'VIBE/base64Binary' );
+  var base64Binary = require( 'SHERPA/base64Binary' );
   var platform = require( 'PHET_CORE/platform' );
 
   // Constants
