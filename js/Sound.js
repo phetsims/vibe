@@ -25,21 +25,26 @@ define( function( require ) {
   // using Web Audio API.
   var audioContext;
   if ( 'AudioContext' in window ) {
+    /*global AudioContext*/ // Disable jshint warning.
     audioContext = new AudioContext();
   }
   else if ( 'webkitAudioContext' in window ) {
+    /*global webkitAudioContext*/
+    /*jshint newcap:false*/ // Disable jshint warning.
     audioContext = new webkitAudioContext();
   }
 
   /**
-   * @param {String|{url|base64}} soundURL - name of this sound no path name, e.g. "ding.mp3".
-   * If it is an object, it has either a url or base64 field, depending on whether it is running at requirejs development time or build time.
+   * @param {String|{url|base64}} soundURL - URL of the sound or an object.
+   * If it is an object, it has either a url or base64 field, depending on
+   * whether it is running at requirejs development time or build time.
    * @constructor
    */
   function Sound( soundName ) {
     var soundURL = soundName;
 
     //TODO: Switch over to this style for the constructor once clients are all using it.
+    var base64;
     if ( typeof(soundName) === 'object' ) {
 
       //Load the path from the requirejs development option
@@ -49,7 +54,7 @@ define( function( require ) {
 
       //Load the base64 text
       else if ( soundName.base64 ) {
-        var base64 = soundName.base64;
+        base64 = soundName.base64;
 
       }
       else {
