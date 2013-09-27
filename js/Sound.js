@@ -17,9 +17,7 @@ define( function( require ) {
   // Imports
   var base64Binary = require( 'SHERPA/base64Binary' );
   var platform = require( 'PHET_CORE/platform' );
-
-  // Constants
-  var SILENCE_PATH = 'sounds/empty.mp3';
+  var empty = require( 'audio!VIBE/../audio/empty.mp3' );
 
   // Set up a single audio context that will be used by all sounds when
   // using Web Audio API.
@@ -35,73 +33,30 @@ define( function( require ) {
   }
 
   /**
-   * @param {String|{url|base64}} soundURL - URL of the sound or an object.
-   * If it is an object, it has either a url or base64 field, depending on
-   * whether it is running at requirejs development time or build time.
+   * @param {Object} soundInfo - Object containing information
+   * that defines the sound, either a RUL or a base64 definition.
    * @constructor
    */
-  function Sound( soundName ) {
-    var soundURL = soundName;
+  function Sound( soundInfo ) {
 
-    //TODO: Switch over to this style for the constructor once clients are all using it.
-    var base64;
-    if ( typeof(soundName) === 'object' ) {
-
-      //Load the path from the requirejs development option
-      if ( soundName.url ) {
-        soundURL = soundName.url;
-      }
-
-      //Load the base64 text
-      else if ( soundName.base64 ) {
-        base64 = soundName.base64;
-
-      }
-      else {
-        throw new Error( 'Sound argument incorrect' );
-      }
+    // Parameter checking.
+    if ( typeof( soundInfo ) !== 'object' || ( typeof( soundInfo.base64 ) === 'undefined' && typeof( soundInfo.url ) === 'undefined' ) ) {
+      throw new Error( 'Error with soundInfo object: Does not contain a necessary value.' );
     }
 
     var self = this;
 
-    // Locate the sound data.
-    this.sound = document.getElementById( soundURL );
-    if ( this.sound !== null ) {
-      // Sound data is already in the DOM.  For PhET's purposes, it should be
-      // encoded as base64 data.  If it's not, throw an error.
-      if ( this.sound.getAttribute( 'src' ).match( /^data/ ) === null ) {
-        throw new Error( "Embedded audio data must be encoded as base64." );
-      }
-    }
-    else {
-      // Set up an audio element in the DOM with a relative path.
-      //TODO: This is for backward compatibility, can be deleted once we have cut over to audio! plugin
-      if ( !base64 ) {
-        this.sound = document.createElement( 'audio' );
-        this.sound.setAttribute( 'src', soundURL );
-        this.sound.load();
-      }
-    }
-
-    if ( this.sound === null && !base64 ) {
-      // Sound not found.
-      throw new Error( "The specified sound was not found: " + soundURL );
-    }
-
-    // Load the sound. TODO: Consider moving this to sim preload phase.
+    // Load the sound.
     if ( audioContext ) {
       var arrayBuff;
 
-//      debugger;
-      if ( base64 || this.sound.getAttribute( 'src' ).match( /^data:/ ) !== null ) {
+      if ( soundInfo.base64 ) {
         // We're working with base64 data, so we need to decode it.
-
-        //The regular expression removes the mime header
-        var soundData = (base64 ? base64 : this.sound.getAttribute( 'src' )).replace( new RegExp( '^.*,' ), '' );
+        // The regular expression removes the mime header
+        var soundData = ( soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' )).replace( new RegExp( '^.*,' ), '' );
         arrayBuff = base64Binary.decodeArrayBuffer( soundData );
         audioContext.decodeAudioData( arrayBuff,
           function( audioData ) {
-//            debugger;
             self.audioBuffer = audioData;
           },
           function() {
@@ -109,9 +64,9 @@ define( function( require ) {
           } );
       }
       else {
-        // Sound is not yet in DOM, try loading via relative URL path.
+        // Load sound via URL.
         var request = new XMLHttpRequest();
-        request.open( 'GET', soundURL, true );
+        request.open( 'GET', soundInfo.url, true );
         request.responseType = 'arraybuffer';
         request.onload = function() {
           // Decode the audio data asynchronously
@@ -119,15 +74,21 @@ define( function( require ) {
             function( audioData ) {
               self.audioBuffer = audioData;
             },
-            function() { console.log( "Error loading and decoding sound, sound name: " + soundURL ); }
+            function() { console.log( "Error loading and decoding sound, sound name: " + soundInfo.url ); }
           );
         };
         request.onerror = function() {
-          console.log( "Error occurred on request (delete this code when debugged)" );
+          console.log( "Error occurred on attempt to load sound data." );
         };
-
         request.send();
       }
+    }
+    else {
+      // Web Audio API is not available, so insert the sound into the DOM and
+      // use HTML5 audio.
+      this.sound = document.createElement( 'audio' );
+      this.sound.setAttribute( 'src', soundInfo.base64 ? soundInfo.base64 : soundInfo.url );
+      this.sound.load();
     }
   }
 
@@ -177,13 +138,7 @@ define( function( require ) {
   // See http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api
   // Note: This requires the user to touch the screen before audio can be played
   if ( platform.mobileSafari ) {
-    var silenceDomNode = document.createElement( 'audio' );
-    silenceDomNode.setAttribute( 'id', SILENCE_PATH );
-    // Base64 encoded silence, taken from empty.mp3, created by PhET.
-    silenceDomNode.setAttribute( 'src', 'data:audio/mpeg;base64,//s0wAAAAAABLgAAACAAACXAAAAE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////s0wD2AAAABLgAAACAAACXAAAAE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8AAAAAAAAAAAAAAAAAAAAAAAAA//s0wHsAAAABLgAAACAAACXAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//s0wLiAAAABLgAAACAAACXAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//s0wPYADQABLgAAACAAACXAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//s0wP+AD2ABLgAAACAAACXAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' );
-    document.body.appendChild( silenceDomNode );
-
-    var silence = new Sound( SILENCE_PATH );
+    var silence = new Sound( empty );
     var playSilence = function() {
       silence.play();
       window.removeEventListener( 'touchstart', playSilence, false );
