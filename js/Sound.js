@@ -17,7 +17,7 @@ define( function( require ) {
   // Imports
   var base64Binary = require( 'SHERPA/base64Binary' );
   var platform = require( 'PHET_CORE/platform' );
-  var empty = require( 'audio!VIBE/../audio/empty.mp3' );
+  var empty = require( 'audio!VIBE/empty.mp3' );
 
   // Set up a single audio context that will be used by all sounds when
   // using Web Audio API.
