@@ -34,10 +34,11 @@ define( function( require ) {
 
   /**
    * @param {Object} soundInfo - Object containing information
-   * that defines the sound, either a RUL or a base64 definition.
+   * that defines the sound, either a URL or a base64 definition.
    * @constructor
    */
   function Sound( soundInfo ) {
+    debugger;
 
     // Parameter checking.
     if ( typeof( soundInfo ) !== 'object' || ( typeof( soundInfo.base64 ) === 'undefined' && typeof( soundInfo.url ) === 'undefined' ) ) {
