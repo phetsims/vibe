@@ -38,7 +38,6 @@ define( function( require ) {
    * @constructor
    */
   function Sound( soundInfo ) {
-    debugger;
 
     // Parameter checking.
     if ( typeof( soundInfo ) !== 'object' || ( typeof( soundInfo.base64 ) === 'undefined' && typeof( soundInfo.url ) === 'undefined' ) ) {
