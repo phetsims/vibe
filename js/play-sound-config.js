@@ -13,9 +13,15 @@ require.config( {
   },
 
   paths: {
+
+    // plugins
+    audio: '../../chipper/requirejs-plugins/audio',
+
+    // PhET libs, uppercase names to identify them in require.js imports
+    ASSERT: '../../assert/js',
     PHET_CORE: '../../phet-core/js',
-    VIBE: '../../vibe/js',
-    SHERPA: '../../sherpa/'
+    SHERPA: '../../sherpa',
+    VIBE: '../../vibe/js'
   },
 
   urlArgs: new Date().getTime()  // cache buster to make browser refresh load all included scripts

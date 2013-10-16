@@ -33,62 +33,102 @@ define( function( require ) {
   }
 
   /**
-   * @param {Object} soundInfo - Object containing information
-   * that defines the sound, either a URL or a base64 definition.
+   * @param {Array} soundInfoArray An array of 'soundInfo' objects.  Each
+   * soundInfo object includes *either* a url that points to the sound to be
+   * played or a base64-encoded version of the sound data.  The array is
+   * generally used to hold multiple formats for a given sound (e.g. mp3 and
+   * ogg).
    * @constructor
    */
-  function Sound( soundInfo ) {
-
-    // Parameter checking.
-    if ( typeof( soundInfo ) !== 'object' || ( typeof( soundInfo.base64 ) === 'undefined' && typeof( soundInfo.url ) === 'undefined' ) ) {
-      throw new Error( 'Error with soundInfo object: Does not contain a necessary value.' );
-    }
+  function Sound( soundInfoArray ) {
 
     var self = this;
 
-    // Load the sound.
-    if ( audioContext ) {
-      var arrayBuff;
-
-      if ( soundInfo.base64 ) {
-        // We're working with base64 data, so we need to decode it.
-        // The regular expression removes the mime header
-        var soundData = ( soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' )).replace( new RegExp( '^.*,' ), '' );
-        arrayBuff = base64Binary.decodeArrayBuffer( soundData );
-        audioContext.decodeAudioData( arrayBuff,
-          function( audioData ) {
-            self.audioBuffer = audioData;
-          },
-          function() {
-            console.log( "Error: Unable to decode audio data." );
-          } );
+    // For backward compatibility with earlier versions, support the case
+    // where a single soundInfo object is passed in.
+    var localSoundInfoArray = soundInfoArray;
+    if ( !( soundInfoArray instanceof Array ) ) {
+      localSoundInfoArray = new Array( soundInfoArray );
+    }
+    // Parameter checking.
+    localSoundInfoArray.forEach( function( soundInfo ) {
+      if ( typeof( soundInfo ) !== 'object' || ( typeof( soundInfo.base64 ) === 'undefined' && typeof( soundInfo.url ) === 'undefined' ) ) {
+        throw new Error( 'Error with soundInfo object: Does not contain a necessary value.' );
       }
-      else {
-        // Load sound via URL.
-        var request = new XMLHttpRequest();
-        request.open( 'GET', soundInfo.url, true );
-        request.responseType = 'arraybuffer';
-        request.onload = function() {
-          // Decode the audio data asynchronously
-          audioContext.decodeAudioData( request.response,
+    } );
+
+    this.sound = document.createElement( 'audio' );
+    var supportedFormatFound = false;
+    for ( var i = 0; i < localSoundInfoArray.length && !supportedFormatFound; i++ ){
+
+      var soundInfo = localSoundInfoArray[ i ];
+
+      // Identify the audio format.
+      var audioFormat;
+      if ( soundInfo.url ){
+        audioFormat = 'audio/' + soundInfo.url.slice( soundInfo.url.lastIndexOf( '.' ) + 1 );
+      }
+      else{
+        audioFormat = soundInfo.base64.slice( soundInfo.base64.indexOf( ':' ) + 1, soundInfo.base64.indexOf( ';' ) );
+      }
+
+      // Determine whether this audio format is supported.
+      if ( this.sound.canPlayType( audioFormat ) ){
+        // This one is supported, so fall out of the loop to the next section.
+        supportedFormatFound = true;
+      }
+      else{
+        console.log('Warning: Can\'t play audio type ' + audioFormat + ', skipping.' );
+        if ( i === localSoundInfoArray.length - 1 ){
+          console.log('Warning: No supported audio formats found, sound will not be played.' );
+        }
+      }
+    }
+
+    // Load the sound.
+    if ( supportedFormatFound ){
+      if ( audioContext ) {
+        var arrayBuff;
+
+        if ( soundInfo.base64 ) {
+          // We're working with base64 data, so we need to decode it.
+          // The regular expression removes the mime header
+          var soundData = ( soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' )).replace( new RegExp( '^.*,' ), '' );
+          arrayBuff = base64Binary.decodeArrayBuffer( soundData );
+          audioContext.decodeAudioData( arrayBuff,
             function( audioData ) {
               self.audioBuffer = audioData;
             },
-            function() { console.log( "Error loading and decoding sound, sound name: " + soundInfo.url ); }
-          );
-        };
-        request.onerror = function() {
-          console.log( "Error occurred on attempt to load sound data." );
-        };
-        request.send();
+            function() {
+              console.log( "Error: Unable to decode audio data." );
+            } );
+        }
+        else {
+          // Load sound via URL.
+          var request = new XMLHttpRequest();
+          request.open( 'GET', soundInfo.url, true );
+          request.responseType = 'arraybuffer';
+          request.onload = function() {
+            // Decode the audio data asynchronously
+            audioContext.decodeAudioData( request.response,
+              function( audioData ) {
+                self.audioBuffer = audioData;
+              },
+              function() { console.log( "Error loading and decoding sound, sound name: " + soundInfo.url ); }
+            );
+          };
+          request.onerror = function() {
+            console.log( "Error occurred on attempt to load sound data." );
+          };
+          request.send();
+        }
       }
-    }
-    else {
-      // Web Audio API is not available, so insert the sound into the DOM and
-      // use HTML5 audio.
-      this.sound = document.createElement( 'audio' );
-      this.sound.setAttribute( 'src', soundInfo.base64 ? soundInfo.base64 : soundInfo.url );
-      this.sound.load();
+      else {
+        // Web Audio API is not available, so insert the sound into the DOM and
+        // use HTML5 audio.
+        this.sound.setAttribute( 'src', soundInfoArray.base64 ? soundInfoArray.base64 : soundInfoArray.url );
+        this.sound.load();
+      }
     }
   }
 
