@@ -127,7 +127,7 @@ define( function( require ) {
       else {
         // Web Audio API is not available, so insert the sound into the DOM and
         // use HTML5 audio.
-        this.sound.setAttribute( 'src', soundInfoArray.base64 ? soundInfoArray.base64 : soundInfoArray.url );
+        this.sound.setAttribute( 'src', soundInfo.base64 ? soundInfo.base64 : soundInfo.url );
         this.sound.load();
       }
     }
