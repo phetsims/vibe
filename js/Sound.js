@@ -79,7 +79,6 @@ define( function( require ) {
         supportedFormatFound = true;
       }
       else{
-        console.log('Warning: Can\'t play audio type ' + audioFormat + ', skipping.' );
         if ( i === localSoundInfoArray.length - 1 ){
           console.log('Warning: No supported audio formats found, sound will not be played.' );
         }
