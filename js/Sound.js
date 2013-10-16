@@ -59,9 +59,10 @@ define( function( require ) {
 
     this.sound = document.createElement( 'audio' );
     var supportedFormatFound = false;
+    var soundInfo = null;
     for ( var i = 0; i < localSoundInfoArray.length && !supportedFormatFound; i++ ){
 
-      var soundInfo = localSoundInfoArray[ i ];
+      soundInfo = localSoundInfoArray[ i ];
 
       // Identify the audio format.
       var audioFormat;
