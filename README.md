@@ -6,7 +6,7 @@ Library for handling audio for PhET simulations.  Main intentions are cross-plat
 By PhET Interactive Simulations
 http://phet.colorado.edu/
 
-NOTE: This repository has dependency on other repositories. Those repositories
+NOTE: This repository has dependencies on other repositories. Those repositories
 much be checked out as siblings to this repository in your directory structure.
 
 Third-Party Dependencies
