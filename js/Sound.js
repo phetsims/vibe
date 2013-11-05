@@ -1,15 +1,12 @@
 // Copyright 2002-2013, University of Colorado Boulder
 
 /**
- * Type for loading a playing sounds, works on multiple platforms and supports
- * embedded base64 data.  This uses Web Audio when available, primarily
- * because the webkit platforms were failing with cross-domain errors when
- * attempting to load audio data from embedded data URIs.  This was occurring
- * in mid-September 2013.  Simplification may be possible if the cross-domain
- * issue goes away at some point in the future.
- *
- * TODO: Do we want to specify just the stem of the file name and have this
- * code figure out whether to use mp3 or ogg?
+ * Type for loading and playing sounds, works on multiple platforms and
+ * supports embedded base64 data.  This uses Web Audio when available,
+ * primarily because the webkit platforms were failing with cross-domain
+ * errors when attempting to load audio data from embedded data URIs.  This
+ * was occurring in mid-September 2013.  Simplification may be possible if the
+ * cross-domain issue goes away at some point in the future.
  */
 define( function( require ) {
   'use strict';
@@ -35,7 +32,7 @@ define( function( require ) {
   /**
    * @param {Array} soundInfoArray An array of 'soundInfo' objects.  Each
    * soundInfo object includes *either* a url that points to the sound to be
-   * played or a base64-encoded version of the sound data.  The array is
+   * played *or* a base64-encoded version of the sound data.  The array is
    * generally used to hold multiple formats for a given sound (e.g. mp3 and
    * ogg).
    * @constructor
@@ -60,33 +57,33 @@ define( function( require ) {
     this.sound = document.createElement( 'audio' );
     var supportedFormatFound = false;
     var soundInfo = null;
-    for ( var i = 0; i < localSoundInfoArray.length && !supportedFormatFound; i++ ){
+    for ( var i = 0; i < localSoundInfoArray.length && !supportedFormatFound; i++ ) {
 
       soundInfo = localSoundInfoArray[ i ];
 
       // Identify the audio format.
       var audioFormat;
-      if ( soundInfo.url ){
+      if ( soundInfo.url ) {
         audioFormat = 'audio/' + soundInfo.url.slice( soundInfo.url.lastIndexOf( '.' ) + 1 );
       }
-      else{
+      else {
         audioFormat = soundInfo.base64.slice( soundInfo.base64.indexOf( ':' ) + 1, soundInfo.base64.indexOf( ';' ) );
       }
 
       // Determine whether this audio format is supported.
-      if ( this.sound.canPlayType( audioFormat ) ){
+      if ( this.sound.canPlayType( audioFormat ) ) {
         // This one is supported, so fall out of the loop to the next section.
         supportedFormatFound = true;
       }
-      else{
-        if ( i === localSoundInfoArray.length - 1 ){
-          console.log('Warning: No supported audio formats found, sound will not be played.' );
+      else {
+        if ( i === localSoundInfoArray.length - 1 ) {
+          console.log( 'Warning: No supported audio formats found, sound will not be played.' );
         }
       }
     }
 
     // Load the sound.
-    if ( supportedFormatFound ){
+    if ( supportedFormatFound ) {
       if ( audioContext ) {
         var arrayBuff;
 
