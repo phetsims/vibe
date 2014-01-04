@@ -12,7 +12,7 @@ define( function( require ) {
   'use strict';
 
   // Imports
-  var base64Binary = require( 'SHERPA/base64Binary' );
+  var base64Binary = require( 'SHERPA/base64binary' );
   var platform = require( 'PHET_CORE/platform' );
   var empty = require( 'audio!VIBE/empty.mp3' );
 
