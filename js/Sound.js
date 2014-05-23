@@ -11,7 +11,7 @@
 define( function( require ) {
   'use strict';
 
-  // Imports
+  // modules
   var base64Binary = require( 'SHERPA/base64binary' );
   var platform = require( 'PHET_CORE/platform' );
   var empty = require( 'audio!VIBE/empty.mp3' );
