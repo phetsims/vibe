@@ -15,6 +15,10 @@ define( function( require ) {
   var base64Binary = require( 'SHERPA/base64binary' );
   var platform = require( 'PHET_CORE/platform' );
   var empty = require( 'audio!VIBE/empty.mp3' );
+  var Property = require( 'AXON/Property' );
+
+  // Global property that allows all audio to be turned on/off, see #11
+  var audioEnabledProperty = new Property( true );
 
   // Set up a single audio context that will be used by all sounds when
   // using Web Audio API.
@@ -133,6 +137,9 @@ define( function( require ) {
    * Plays the sound using the Web Audio API if available or HTML5 audio if not.
    */
   Sound.prototype.play = function() {
+    if ( !Sound.audioEnabledProperty.get() ) {
+      return;
+    }
     if ( audioContext ) {
       // Use the Web Audio API.
       this.soundSource = audioContext.createBufferSource();
@@ -183,6 +190,8 @@ define( function( require ) {
     };
     window.addEventListener( 'touchstart', playSilence, false );
   }
+
+  Sound.audioEnabledProperty = audioEnabledProperty;
 
   return Sound;
 } );
