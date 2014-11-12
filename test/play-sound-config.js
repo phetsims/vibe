@@ -18,7 +18,6 @@ require.config( {
     audio: '../../chipper/requirejs-plugins/audio',
 
     // PhET libs, uppercase names to identify them in require.js imports
-    ASSERT: '../../assert/js',
     PHET_CORE: '../../phet-core/js',
     SHERPA: '../../sherpa',
     VIBE: '../../vibe/js'
