@@ -17,7 +17,7 @@ define( function( require ) {
     embeddedSound.play();
   };
 
-  var relativePathSound = new Sound( [ { url: '../audio/relative-path-sound.mp3' }, { url: '../audio/relative-path-sound.ogg' } ] );
+  var relativePathSound = new Sound( [ { url: 'audio/relative-path-sound.mp3' }, { url: 'audio/relative-path-sound.ogg' } ] );
   var relativePathAudioButton = document.getElementById( 'relativePathAudioButton' );
   relativePathAudioButton.onclick = function() {
     relativePathSound.stop();
