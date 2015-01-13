@@ -7,8 +7,7 @@
 require.config( {
   deps: [ 'vibe-test-main' ],
 
-  config: {
-  },
+  config: {},
 
   paths: {
 
