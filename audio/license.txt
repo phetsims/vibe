@@ -1,3 +1,3 @@
-empty.mp3 author=PhET
-relative-path-sound.mp3 author=PhET
-relative-path-sound.ogg author=PhET
+empty.mp3 author=PhET notes=required for iOS+Safari workaround, see Sound.js
+relative-path-sound.mp3 author=PhET notes=used in vibe-test-main.js
+relative-path-sound.ogg author=PhET notes=used in vibe-test-main.js
