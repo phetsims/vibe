@@ -12,7 +12,7 @@ require.config( {
   paths: {
 
     // plugins
-    audio: '../../chipper/requirejs-plugins/audio',
+    audio: '../../chipper/js/requirejs-plugins/audio',
 
     // PhET libs, uppercase names to identify them in require.js imports
     AXON: '../../axon/js',
