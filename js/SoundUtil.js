@@ -9,6 +9,9 @@
 define( function( require ) {
   'use strict';
 
+  // modules
+  var base64Binary = require( 'SHERPA/base64binary' );
+
   return {
 
     /**
@@ -115,5 +118,5 @@ define( function( require ) {
         throw new Error( 'web audio not supported on this platform' );
       }
     }
-  }
+  };
 } );
