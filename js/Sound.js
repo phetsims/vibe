@@ -12,7 +12,6 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var base64Binary = require( 'SHERPA/base64binary' );
   var platform = require( 'PHET_CORE/platform' );
   var empty = require( 'audio!VIBE/empty.mp3' );
   var Property = require( 'AXON/Property' );
