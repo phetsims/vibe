@@ -92,10 +92,15 @@ define( function( require ) {
         var arrayBuff;
 
         if ( soundInfo.base64 ) {
-          // We're working with base64 data, so we need to decode it.
-          // The regular expression removes the mime header
+          // We're working with base64 data, so we need to decode it. The regular expression removes the mime header.
           var soundData = ( soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' )).replace( new RegExp( '^.*,' ), '' );
-          arrayBuff = base64Binary.decodeArrayBuffer( soundData );
+          var byteChars = window.atob( soundData );
+          var byteArray = new window.Uint8Array( byteChars.length );
+          for ( var j = 0; j < byteArray.length; j++ ) {
+            byteArray[ j ] = byteChars.charCodeAt( j ); // need check to make sure this cast doesn't give problems?
+          }
+          arrayBuff = byteArray.buffer;
+
           audioContext.decodeAudioData( arrayBuff,
             function( audioData ) {
               self.audioBuffer = audioData;
