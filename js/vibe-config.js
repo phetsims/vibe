@@ -5,7 +5,7 @@
  * @author John Blanco
  */
 require.config( {
-  deps: [ 'vibe-test-main' ],
+  deps: [ 'vibe-main' ],
 
   config: {},
 
