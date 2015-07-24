@@ -1,3 +1,26 @@
-empty.mp3 author=PhET notes=required for iOS+Safari workaround, see Sound.js
-relative-path-sound.mp3 author=PhET notes=used in vibe-test-main.js
-relative-path-sound.ogg author=PhET notes=used in vibe-test-main.js
+{
+  "empty.mp3": {
+    "text": [
+      "Copyright 2002-2015 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": "required for iOS+Safari workaround, see Sound.js"
+  },
+  "relative-path-sound.mp3": {
+    "text": [
+      "Copyright 2002-2015 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": "used in vibe-test-main.js"
+  },
+  "relative-path-sound.ogg": {
+    "text": [
+      "Copyright 2002-2015 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": "used in vibe-test-main.js"
+  }
+}
