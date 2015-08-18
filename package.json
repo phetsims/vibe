@@ -15,9 +15,6 @@
   },
   "phet": {
     "requirejsNamespace": "VIBE",
-    "simTitleStringKey": "VIBE/vibe.name",
-    "phetLibs": [
-      "vibe"
-    ]
+    "simTitleStringKey": "VIBE/vibe.name"
   }
 }
