@@ -14,7 +14,7 @@ define( function( require ) {
   var Screen = require( 'JOIST/Screen' );
 
   // strings
-  var vibeSimString = require( 'string!VIBE/vibe.name' );
+  var vibeSimString = require( 'string!VIBE/vibe.title' );
 
   /**
    * @constructor
