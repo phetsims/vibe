@@ -106,7 +106,7 @@ define( function( require ) {
               self.audioBuffer = audioData;
             },
             function() {
-              console.log( "Error: Unable to decode audio data." );
+              console.log( 'Error: Unable to decode audio data.' );
             } );
         }
         else {
@@ -120,11 +120,11 @@ define( function( require ) {
               function( audioData ) {
                 self.audioBuffer = audioData;
               },
-              function() { console.log( "Error loading and decoding sound, sound name: " + soundInfo.url ); }
+              function() { console.log( 'Error loading and decoding sound, sound name: ' + soundInfo.url ); }
             );
           };
           request.onerror = function() {
-            console.log( "Error occurred on attempt to load sound data." );
+            console.log( 'Error occurred on attempt to load sound data.' );
           };
           request.send();
         }
