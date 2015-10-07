@@ -26,7 +26,7 @@ define( function( require ) {
     audioContext = new AudioContext();
   }
   else if ( 'webkitAudioContext' in window ) {
-    audioContext = new webkitAudioContext();
+    audioContext = new webkitAudioContext(); // eslint-disable-line no-undef
   }
 
   /**
