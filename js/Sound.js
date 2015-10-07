@@ -23,12 +23,9 @@ define( function( require ) {
   // using Web Audio API.
   var audioContext;
   if ( 'AudioContext' in window ) {
-    /*global AudioContext*/ // Disable jshint warning.
     audioContext = new AudioContext();
   }
   else if ( 'webkitAudioContext' in window ) {
-    /*global webkitAudioContext*/
-    /*jshint newcap:false*/ // Disable jshint warning.
     audioContext = new webkitAudioContext();
   }
 
