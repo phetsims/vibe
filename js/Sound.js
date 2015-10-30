@@ -137,6 +137,7 @@ define( function( require ) {
 
   /**
    * Plays the sound using the Web Audio API if available or HTML5 audio if not.
+   * @public
    */
   Sound.prototype.play = function() {
     if ( !Sound.audioEnabledProperty.get() ) {
@@ -163,6 +164,7 @@ define( function( require ) {
 
   /**
    * Stop the sound if it is currently playing.
+   * @public
    */
   Sound.prototype.stop = function() {
     if ( 'AudioContext' in window ) {
@@ -193,6 +195,7 @@ define( function( require ) {
     window.addEventListener( 'touchstart', playSilence, false );
   }
 
+  // @pubic
   Sound.audioEnabledProperty = audioEnabledProperty;
 
   return Sound;
