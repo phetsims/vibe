@@ -8,7 +8,6 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var VibeModel = require( 'VIBE/vibe/model/VibeModel' );
   var VibeScreenView = require( 'VIBE/vibe/view/VibeScreenView' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
@@ -26,7 +25,7 @@ define( function( require ) {
     var icon = null;
 
     Screen.call( this, vibeSimString, icon,
-      function() { return new VibeModel(); },
+      function() { return {}; },
       function( model ) { return new VibeScreenView( model ); },
       { backgroundColor: 'white' }
     );
