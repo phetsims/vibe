@@ -13,7 +13,7 @@ define( function( require ) {
   var Screen = require( 'JOIST/Screen' );
 
   // strings
-  var vibeSimString = require( 'string!VIBE/vibe.title' );
+  var vibeTitleString = require( 'string!VIBE/vibe.title' );
 
   /**
    * @constructor
@@ -24,7 +24,7 @@ define( function( require ) {
     //If there are multiple screens, then the icon must be provided here.
     var icon = null;
 
-    Screen.call( this, vibeSimString, icon,
+    Screen.call( this, vibeTitleString, icon,
       function() { return {}; },
       function( model ) { return new VibeScreenView( model ); },
       { backgroundColor: 'white' }

@@ -14,7 +14,7 @@ define( function( require ) {
   var SimLauncher = require( 'JOIST/SimLauncher' );
 
   // strings
-  var simTitle = require( 'string!VIBE/vibe.title' );
+  var vibeTitleString = require( 'string!VIBE/vibe.title' );
 
   var simOptions = {
     credits: {
@@ -36,7 +36,7 @@ define( function( require ) {
   }
 
   SimLauncher.launch( function() {
-    var sim = new Sim( simTitle, [ new VibeScreen() ], simOptions );
+    var sim = new Sim( vibeTitleString, [ new VibeScreen() ], simOptions );
     sim.start();
   } );
 } );
