@@ -15,6 +15,7 @@ define( function( require ) {
   var platform = require( 'PHET_CORE/platform' );
   var empty = require( 'audio!VIBE/empty.mp3' );
   var Property = require( 'AXON/Property' );
+  var vibe = require( 'VIBE/vibe' );
 
   // Global property that allows all audio to be turned on/off, see #11
   var audioEnabledProperty = new Property( true );
@@ -134,6 +135,8 @@ define( function( require ) {
       }
     }
   }
+
+  vibe.register( 'Sound', Sound );
 
   /**
    * Plays the sound using the Web Audio API if available or HTML5 audio if not.

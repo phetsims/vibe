@@ -14,6 +14,7 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Sound = require( 'VIBE/Sound' );
+  var vibe = require( 'VIBE/vibe' );
 
   // constants
   var BUTTON_FONT = new PhetFont( { size: 20 } );
@@ -90,6 +91,8 @@ define( function( require ) {
     this.addChild( playInAnimationFrameButton );
 
   }
+
+  vibe.register( 'VibeScreenView', VibeScreenView );
 
   return inherit( ScreenView, VibeScreenView, {
 

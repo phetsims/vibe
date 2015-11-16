@@ -11,6 +11,7 @@ define( function( require ) {
   var VibeScreenView = require( 'VIBE/vibe/view/VibeScreenView' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
+  var vibe = require( 'VIBE/vibe' );
 
   // strings
   var vibeTitleString = require( 'string!VIBE/vibe.title' );
@@ -30,6 +31,8 @@ define( function( require ) {
       { backgroundColor: 'white' }
     );
   }
+
+  vibe.register( 'VibeScreen', VibeScreen );
 
   return inherit( Screen, VibeScreen );
 } );
