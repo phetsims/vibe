@@ -1,7 +1,7 @@
 // Copyright 2015, University of Colorado Boulder
 
 /**
- *
+ * Main screen for the test/demo harness for the 'vibe' repo, which is an audio library.
  * @author John Blanco
  */
 define( function( require ) {
@@ -21,11 +21,10 @@ define( function( require ) {
    */
   function VibeScreen() {
 
-    //If this is a single-screen sim, then no icon is necessary.
-    //If there are multiple screens, then the icon must be provided here.
-    var icon = null;
-
-    Screen.call( this, vibeTitleString, icon,
+    Screen.call(
+      this,
+      vibeTitleString,
+      null,
       function() { return {}; },
       function( model ) { return new VibeScreenView( model ); },
       { backgroundColor: 'white' }

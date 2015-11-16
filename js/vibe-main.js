@@ -18,9 +18,8 @@ define( function( require ) {
 
   var simOptions = {
     credits: {
-      //TODO fill in proper credits, all of these fields are optional, see joist.AboutDialog
       leadDesign: '',
-      softwareDevelopment: '',
+      softwareDevelopment: 'John Blanco, Chris Malley (PixelZoom, Inc.)',
       team: '',
       qualityAssurance: '',
       graphicArts: '',
