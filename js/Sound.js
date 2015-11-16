@@ -104,7 +104,6 @@ define( function( require ) {
           audioContext.decodeAudioData( arrayBuff,
             function( audioData ) {
               self.audioBuffer = audioData;
-              console.log( 'in base64 load, loadCount = ' + loadCount++ );
             },
             function() {
               console.log( 'Error: Unable to decode audio data.' );
@@ -120,7 +119,6 @@ define( function( require ) {
             audioContext.decodeAudioData( request.response,
               function( audioData ) {
                 self.audioBuffer = audioData;
-                console.log( 'in URL load, loadCount = ' + loadCount++ );
               },
               function() { console.log( 'Error loading and decoding sound, sound name: ' + soundInfo.url ); }
             );
@@ -150,20 +148,19 @@ define( function( require ) {
     if ( !Sound.audioEnabledProperty.get() ) {
       return;
     }
-    if ( !this.audioBuffer ) {
-      console.log( 'audio buffer not define (yet?)' );
-    }
-    else if ( audioContext ) {
+    if ( audioContext ) {
       // Use the Web Audio API.
-      this.soundSource = audioContext.createBufferSource();
-      this.soundSource.buffer = this.audioBuffer;
-      this.soundSource.connect( audioContext.destination );
+      if ( this.audioBuffer ) {  // This test is necessary to be sure that the audio has finished loading, see https://github.com/phetsims/vibe/issues/20
+        this.soundSource = audioContext.createBufferSource();
+        this.soundSource.buffer = this.audioBuffer;
+        this.soundSource.connect( audioContext.destination );
 
-      if ( 'AudioContext' in window ) {
-        this.soundSource.start( 0 );
-      }
-      else if ( 'webkitAudioContext' in window ) {
-        this.soundSource.noteOn( 0 );
+        if ( 'AudioContext' in window ) {
+          this.soundSource.start( 0 );
+        }
+        else if ( 'webkitAudioContext' in window ) {
+          this.soundSource.noteOn( 0 );
+        }
       }
     }
     else {
