@@ -30,6 +30,8 @@ define( function( require ) {
     audioContext = new webkitAudioContext(); // eslint-disable-line no-undef
   }
 
+  var loadCount = 0;
+
   /**
    * @param {Array} soundInfoArray An array of 'soundInfo' objects.  Each
    * soundInfo object includes *either* a url that points to the sound to be
@@ -102,6 +104,7 @@ define( function( require ) {
           audioContext.decodeAudioData( arrayBuff,
             function( audioData ) {
               self.audioBuffer = audioData;
+              console.log( 'in base64 load, loadCount = ' + loadCount++ );
             },
             function() {
               console.log( 'Error: Unable to decode audio data.' );
@@ -117,6 +120,7 @@ define( function( require ) {
             audioContext.decodeAudioData( request.response,
               function( audioData ) {
                 self.audioBuffer = audioData;
+                console.log( 'in URL load, loadCount = ' + loadCount++ );
               },
               function() { console.log( 'Error loading and decoding sound, sound name: ' + soundInfo.url ); }
             );
@@ -146,7 +150,10 @@ define( function( require ) {
     if ( !Sound.audioEnabledProperty.get() ) {
       return;
     }
-    if ( audioContext ) {
+    if ( !this.audioBuffer ) {
+      console.log( 'audio buffer not define (yet?)' );
+    }
+    else if ( audioContext ) {
       // Use the Web Audio API.
       this.soundSource = audioContext.createBufferSource();
       this.soundSource.buffer = this.audioBuffer;
