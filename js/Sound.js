@@ -30,8 +30,6 @@ define( function( require ) {
     audioContext = new webkitAudioContext(); // eslint-disable-line no-undef
   }
 
-  var loadCount = 0;
-
   /**
    * @param {Array} soundInfoArray An array of 'soundInfo' objects.  Each
    * soundInfo object includes *either* a url that points to the sound to be
