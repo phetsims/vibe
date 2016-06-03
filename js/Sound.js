@@ -168,13 +168,14 @@ define( function( require ) {
     },
 
     stop: function() {
-      if ( 'AudioContext' in window ) {
-        // TODO: TBD
-      }
-      else if ( 'webkitAudioContext' in window ) {
-        // TODO: TBD
+      if ( audioContext && this.soundSource ) {
+
+        // use Web Audio API
+        this.soundSource.stop();
       }
       else {
+
+        // use HTML5 audio
         this.sound.pause();
         this.sound.currentTime = 0;
       }
