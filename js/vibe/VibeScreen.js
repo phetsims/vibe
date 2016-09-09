@@ -13,18 +13,12 @@ define( function( require ) {
   var Screen = require( 'JOIST/Screen' );
   var vibe = require( 'VIBE/vibe' );
 
-  // strings
-  var vibeTitleString = require( 'string!VIBE/vibe.title' );
-
   /**
    * @constructor
    */
   function VibeScreen() {
 
-    Screen.call(
-      this,
-      vibeTitleString,
-      null,
+    Screen.call( this,
       function() { return {}; },
       function( model ) { return new VibeScreenView( model ); },
       { backgroundColor: 'white' }
