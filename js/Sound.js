@@ -69,8 +69,8 @@ define( function( require ) {
         audioFormat = soundInfo.base64.slice( soundInfo.base64.indexOf( ':' ) + 1, soundInfo.base64.indexOf( ';' ) );
       }
 
-      // Determine whether this audio format is supported.
-      if ( this.sound.canPlayType( audioFormat ) ) {
+      // Determine whether this audio format is supported (doesn't exist for phantomjs)
+      if ( this.sound.canPlayType && this.sound.canPlayType( audioFormat ) ) {
         // This one is supported, so fall out of the loop to the next section.
         supportedFormatFound = true;
       }
@@ -162,8 +162,9 @@ define( function( require ) {
         }
       }
       else {
-        // Use the HTML5 API.
-        this.sound.play();
+
+        // Use the HTML5 API (doesn't exist for phantomjs)
+        this.sound.play && this.sound.play();
       }
     },
 
@@ -175,8 +176,8 @@ define( function( require ) {
       }
       else {
 
-        // use HTML5 audio
-        this.sound.pause();
+        // use HTML5 audio (doesn't exist for phantomjs)
+        this.sound.pause && this.sound.pause();
         this.sound.currentTime = 0;
       }
     }
