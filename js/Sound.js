@@ -30,6 +30,14 @@ define( function( require ) {
     audioContext = new webkitAudioContext(); // eslint-disable-line no-undef
   }
 
+  // Controls volume
+  var gainNode = audioContext.createGain();
+  gainNode.connect( audioContext.destination );
+  gainNode.gain.value = QueryStringMachine.get( 'audioVolume', {
+    type: 'number',
+    defaultValue: 1
+  } ); // TODO: replace with chipper QueryParameters usage
+
   /**
    * @param {Array} soundInfoArray An array of 'soundInfo' objects.  Each soundInfo object includes *either* a url that
    * points to the sound to be played *or* a base64-encoded version of the sound data.  The array is generally used to
@@ -151,7 +159,7 @@ define( function( require ) {
         if ( this.audioBuffer ) {
           this.soundSource = audioContext.createBufferSource();
           this.soundSource.buffer = this.audioBuffer;
-          this.soundSource.connect( audioContext.destination );
+          this.soundSource.connect( gainNode );
 
           if ( 'AudioContext' in window ) {
             this.soundSource.start( 0 );
