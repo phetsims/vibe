@@ -33,10 +33,7 @@ define( function( require ) {
   // Controls volume
   var gainNode = audioContext.createGain();
   gainNode.connect( audioContext.destination );
-  gainNode.gain.value = QueryStringMachine.get( 'audioVolume', {
-    type: 'number',
-    defaultValue: 1
-  } ); // TODO: replace with chipper QueryParameters usage
+  gainNode.gain.value = phet.chipper.queryParameters.audioVolume;
 
   /**
    * @param {Array} soundInfoArray An array of 'soundInfo' objects.  Each soundInfo object includes *either* a url that
