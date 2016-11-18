@@ -30,10 +30,12 @@ define( function( require ) {
     audioContext = new webkitAudioContext(); // eslint-disable-line no-undef
   }
 
-  // Controls volume
-  var gainNode = audioContext.createGain();
-  gainNode.connect( audioContext.destination );
-  gainNode.gain.value = phet.chipper.queryParameters.audioVolume;
+  // Controls volume if Web Audio API supported
+  if ( audioContext ) {
+    var gainNode = audioContext.createGain();
+    gainNode.connect( audioContext.destination );
+    gainNode.gain.value = phet.chipper.queryParameters.audioVolume;
+  }
 
   /**
    * @param {Array} soundInfoArray An array of 'soundInfo' objects.  Each soundInfo object includes *either* a url that
