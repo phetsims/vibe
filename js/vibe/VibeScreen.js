@@ -8,12 +8,10 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var VibeScreenView = require( 'VIBE/vibe/view/VibeScreenView' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
   var vibe = require( 'VIBE/vibe' );
-  var Property = require( 'AXON/Property' );
-  var Color = require( 'SCENERY/util/Color' );
+  var VibeScreenView = require( 'VIBE/vibe/view/VibeScreenView' );
 
   /**
    * @constructor
@@ -22,8 +20,7 @@ define( function( require ) {
 
     Screen.call( this,
       function() { return {}; },
-      function( model ) { return new VibeScreenView( model ); },
-      { backgroundColorProperty: new Property( Color.toColor( 'white' ) ) }
+      function( model ) { return new VibeScreenView( model ); }
     );
   }
 
