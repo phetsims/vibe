@@ -153,10 +153,10 @@ define( function( require ) {
         this.soundSource.buffer = this.audioBuffer;
         this.soundSource.connect( audioContext.destination );
 
-        if ( 'AudioContext' in window ) {
+        if ( typeof this.soundSource.start === 'function' ) {
           this.soundSource.start( 0 );
         }
-        else if ( 'webkitAudioContext' in window ) {
+        else if ( typeof this.soundSource.noteOn === 'function' ) {
           this.soundSource.noteOn( 0 );
         }
       }
