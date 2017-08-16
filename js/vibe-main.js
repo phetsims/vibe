@@ -18,12 +18,7 @@ define( function( require ) {
 
   var simOptions = {
     credits: {
-      leadDesign: '',
-      softwareDevelopment: 'John Blanco, Chris Malley (PixelZoom, Inc.)',
-      team: '',
-      qualityAssurance: '',
-      graphicArts: '',
-      thanks: ''
+      leadDesign: 'PhET'
     }
   };
 
