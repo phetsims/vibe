@@ -9,9 +9,9 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var VibeScreen = require( 'VIBE/vibe/VibeScreen' );
   var Sim = require( 'JOIST/Sim' );
   var SimLauncher = require( 'JOIST/SimLauncher' );
+  var VibeScreen = require( 'VIBE/vibe/VibeScreen' );
 
   // strings
   var vibeTitleString = require( 'string!VIBE/vibe.title' );
