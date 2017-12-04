@@ -10,6 +10,10 @@
     "grunt": "~1.0.0"
   },
   "phet": {
-    "requirejsNamespace": "VIBE"
+    "requirejsNamespace": "VIBE",
+    "runnable": true,
+    "supportedBrands": [
+      "phet"
+    ]
   }
 }
