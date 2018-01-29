@@ -22,19 +22,13 @@ define( function( require ) {
   var audioEnabledProperty = new Property( true );
 
   // Set up a single audio context that will be used by all sounds when using Web Audio API.
-  var audioContext;
-  if ( 'AudioContext' in window ) {
-    audioContext = new AudioContext();
-  }
-  else if ( 'webkitAudioContext' in window ) {
-    audioContext = new webkitAudioContext(); // eslint-disable-line no-undef
-  }
+  var audioContext = new ( window.AudioContext || window.webkitAudioContext )();
 
   // Controls volume if Web Audio API supported
   if ( audioContext ) {
     var gainNode = audioContext.createGain();
     gainNode.connect( audioContext.destination );
-    gainNode.gain.setTargetAtTime( phet.chipper.queryParameters.audioVolume, audioContext.currentTime, 0.001 );
+    gainNode.gain.setValueAtTime( phet.chipper.queryParameters.audioVolume || 1, audioContext.currentTime );
   }
 
   /**
