@@ -43,7 +43,7 @@ define( function( require ) {
 
     // For backward compatibility with earlier versions, support the case where a single soundInfo object is passed in.
     var localSoundInfoArray = soundInfoArray;
-    if ( !( Array.isArray(soundInfoArray) ) ) {
+    if ( !( Array.isArray( soundInfoArray ) ) ) {
       localSoundInfoArray = new Array( soundInfoArray );
     }
     // Parameter checking.
