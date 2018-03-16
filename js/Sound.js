@@ -21,10 +21,16 @@ define( function( require ) {
   // global property that allows all audio to be turned on/off, see #11
   var audioEnabledProperty = new Property( true );
 
-  // Set up a single audio context that will be used by all sounds when using Web Audio API.
-  var audioContext = new ( window.AudioContext || window.webkitAudioContext )();
+  // set up a single audio context that will be used by all sounds when using Web Audio API
+  var audioContext;
+  if ( 'AudioContext' in window ) {
+    audioContext = new AudioContext();
+  }
+  else if ( 'webkitAudioContext' in window ) {
+    audioContext = new webkitAudioContext(); // eslint-disable-line no-undef
+  }
 
-  // Controls volume if Web Audio API supported
+  // controls volume if Web Audio API supported
   if ( audioContext ) {
     var gainNode = audioContext.createGain();
     gainNode.connect( audioContext.destination );
