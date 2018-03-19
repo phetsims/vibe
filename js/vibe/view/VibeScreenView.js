@@ -25,7 +25,7 @@ define( function( require ) {
   );
 
   // audio
-  var RELATIVE_PATH_SOUND = new Sound( require( 'audio!VIBE/relative-path-sound' ) );
+  var RELATIVE_PATH_SOUND = new Sound( require( 'audio!VIBE/relative-path-sound.mp3' ) );
 
   /**
    * @param {VibeModel} vibeModel
