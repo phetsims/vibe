@@ -38,64 +38,52 @@ define( function( require ) {
   }
 
   /**
-   * @param {Array} soundInfoArray An array of 'soundInfo' objects.  Each soundInfo object includes *either* a url that
-   * points to the sound to be played *or* a base64-encoded version of the sound data.  The array is generally used to
-   * hold multiple formats for a given sound (e.g. mp3 and ogg).
+   * @param {Object} soundInfo - An object that includes *either* a url that points to the sound to be played *or* a
+   * base64-encoded version of the sound data.  The former is generally used when a sim is running in RequireJS mode,
+   * the latter is used in built versions.
    * @constructor
    */
-  function Sound( soundInfoArray ) {
+  function Sound( soundInfo ) {
 
     var self = this;
 
-    // For backward compatibility with earlier versions, support the case where a single soundInfo object is passed in.
-    var localSoundInfoArray = soundInfoArray;
-    if ( !( Array.isArray( soundInfoArray ) ) ) {
-      localSoundInfoArray = new Array( soundInfoArray );
+    // parameter checking
+    if ( typeof(soundInfo) !== 'object' || (typeof(soundInfo.base64) === 'undefined' && typeof(soundInfo.url) === 'undefined') ) {
+      throw new Error( 'Error with soundInfo object: Does not contain a necessary value.' );
     }
-    // Parameter checking.
-    localSoundInfoArray.forEach( function( soundInfo ) {
-      if ( typeof( soundInfo ) !== 'object' || ( typeof( soundInfo.base64 ) === 'undefined' && typeof( soundInfo.url ) === 'undefined' ) ) {
-        throw new Error( 'Error with soundInfo object: Does not contain a necessary value.' );
-      }
-    } );
 
     this.sound = document.createElement( 'audio' );
     var supportedFormatFound = false;
-    var soundInfo = null;
-    for ( var i = 0; i < localSoundInfoArray.length && !supportedFormatFound; i++ ) {
 
-      soundInfo = localSoundInfoArray[ i ];
-
-      // Identify the audio format.
-      var audioFormat;
-      if ( soundInfo.url ) {
-        audioFormat = 'audio/' + soundInfo.url.slice( soundInfo.url.lastIndexOf( '.' ) + 1,
-            soundInfo.url.lastIndexOf( '?' ) >= 0 ? soundInfo.url.lastIndexOf( '?' ) : soundInfo.url.length );
-      }
-      else {
-        audioFormat = soundInfo.base64.slice( soundInfo.base64.indexOf( ':' ) + 1, soundInfo.base64.indexOf( ';' ) );
-      }
-
-      // Determine whether this audio format is supported (doesn't exist for phantomjs)
-      if ( this.sound.canPlayType && this.sound.canPlayType( audioFormat ) ) {
-        // This one is supported, so fall out of the loop to the next section.
-        supportedFormatFound = true;
-      }
-      else {
-        if ( i === localSoundInfoArray.length - 1 ) {
-          console.log( 'Warning: No supported audio formats found, sound will not be played.' );
-        }
-      }
+    // identify the audio format
+    var audioFormat;
+    if ( soundInfo.url ) {
+      audioFormat = 'audio/' +
+                    soundInfo.url.slice( soundInfo.url.lastIndexOf( '.' ) + 1,
+                      soundInfo.url.lastIndexOf( '?' ) >= 0 ? soundInfo.url.lastIndexOf( '?' ) : soundInfo.url.length
+                    );
+    }
+    else {
+      audioFormat = soundInfo.base64.slice( soundInfo.base64.indexOf( ':' ) + 1, soundInfo.base64.indexOf( ';' ) );
     }
 
-    // Load the sound.
+    // determine whether this audio format is supported (doesn't exist for phantomjs, which is used in automated testing)
+    if ( this.sound.canPlayType && this.sound.canPlayType( audioFormat ) ) {
+      supportedFormatFound = true;
+    }
+    else {
+      console.log( 'Warning: audio format not supported, sound will not be played.' );
+    }
+
+    // load the sound into memory
     if ( supportedFormatFound ) {
       if ( audioContext ) {
         var arrayBuff;
 
         if ( soundInfo.base64 ) {
+
           // We're working with base64 data, so we need to decode it. The regular expression removes the mime header.
-          var soundData = ( soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' )).replace( new RegExp( '^.*,' ), '' );
+          var soundData = (soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' )).replace( new RegExp( '^.*,' ), '' );
           var byteChars = window.atob( soundData );
           var byteArray = new window.Uint8Array( byteChars.length );
           for ( var j = 0; j < byteArray.length; j++ ) {
@@ -109,15 +97,18 @@ define( function( require ) {
             },
             function() {
               console.log( 'Error: Unable to decode audio data.' );
-            } );
+            }
+          );
         }
         else {
-          // Load sound via URL.
+
+          // load the sound via URL
           var request = new XMLHttpRequest();
           request.open( 'GET', soundInfo.url, true );
           request.responseType = 'arraybuffer';
           request.onload = function() {
-            // Decode the audio data asynchronously
+
+            // decode the audio data asynchronously
             audioContext.decodeAudioData( request.response,
               function( audioData ) {
                 self.audioBuffer = audioData;
@@ -132,8 +123,8 @@ define( function( require ) {
         }
       }
       else {
-        // Web Audio API is not available, so insert the sound into the DOM and
-        // use HTML5 audio.
+
+        // web Audio API is not available, so insert the sound into the DOM and use HTML5 audio
         this.sound.setAttribute( 'src', soundInfo.base64 ? soundInfo.base64 : soundInfo.url );
         this.sound.load();
       }
@@ -196,9 +187,11 @@ define( function( require ) {
 
   // Workaround for iOS+Safari: In this situation, we must play an audio file from a thread initiated by a user event
   // such as touchstart before any sounds will play. This is not possible with scenery, since all scenery events are
-  // batched and dispatched from the animation loop. See
-  // http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api Note: This requires the user to touch
-  // the screen before audio can be played
+  // batched and dispatched from the animation loop.
+  //
+  // See http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api
+  //
+  // Note: This requires the user to touch the screen before audio can be played.
   if ( platform.mobileSafari ) {
 
     var silence = new Sound( empty );
