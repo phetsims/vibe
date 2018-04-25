@@ -48,14 +48,16 @@ define( function( require ) {
     var self = this;
 
     // parameter checking
-    if ( typeof(soundInfo) !== 'object' || (typeof(soundInfo.base64) === 'undefined' && typeof(soundInfo.url) === 'undefined') ) {
+    if ( typeof soundInfo !== 'object' ||
+         ( typeof soundInfo.base64 === 'undefined' && typeof soundInfo.url === 'undefined' ) ) {
       throw new Error( 'Error with soundInfo object: Does not contain a necessary value.' );
     }
 
     this.sound = document.createElement( 'audio' );
     var supportedFormatFound = false;
 
-    // identify the audio format
+    // Identify the audio format.  The URL is generally used when running in RequieJS mode, base64 is used when running
+    // single-html-file (aka "built") simulations.
     var audioFormat;
     if ( soundInfo.url ) {
       audioFormat = 'audio/' +
@@ -83,7 +85,7 @@ define( function( require ) {
         if ( soundInfo.base64 ) {
 
           // We're working with base64 data, so we need to decode it. The regular expression removes the mime header.
-          var soundData = (soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' )).replace( new RegExp( '^.*,' ), '' );
+          var soundData = ( soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' ) ).replace( new RegExp( '^.*,' ), '' );
           var byteChars = window.atob( soundData );
           var byteArray = new window.Uint8Array( byteChars.length );
           for ( var j = 0; j < byteArray.length; j++ ) {
