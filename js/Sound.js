@@ -10,6 +10,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var Display = require( 'SCENERY/display/Display' );
   var inherit = require( 'PHET_CORE/inherit' );
   var platform = require( 'PHET_CORE/platform' );
   var Property = require( 'AXON/Property' );
@@ -146,8 +147,9 @@ define( function( require ) {
         return;
       }
       if ( audioContext ) {
+
         // Use the Web Audio API.  The following 'if' clause is necessary to be sure that the audio has finished
-        // loading, see https://github.com/phetsims/vibe/issues/20
+        // loading, see https://github.com/phetsims/vibe/issues/20.
         if ( this.audioBuffer ) {
           this.soundSource = audioContext.createBufferSource();
           this.soundSource.buffer = this.audioBuffer;
@@ -185,19 +187,44 @@ define( function( require ) {
     audioEnabledProperty: audioEnabledProperty
   } );
 
-  // Workaround for iOS+Safari: In this situation, we must play an audio file from a thread initiated by a user event
-  // such as touchstart before any sounds will play. This is not possible with scenery, since all scenery events are
-  // batched and dispatched from the animation loop. See
-  // http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api Note: This requires the user to touch
-  // the screen before audio can be played
-  if ( platform.mobileSafari ) {
+  // Below is some platform-specific code for handling a number of issues related to audio.  It may be possible to
+  // remove some or all of this as Web Audio becomes more consistently implemented.
+  if ( audioContext ) {
 
-    var silence = new Sound( empty );
-    var playSilence = function() {
-      silence.play();
-      window.removeEventListener( 'touchstart', playSilence, false );
-    };
-    window.addEventListener( 'touchstart', playSilence, false );
+    if ( !platform.mobileSafari ) {
+
+      // In some browsers the audio context is not allowed to run before the user interacts with the simulation.  The
+      // motivation for this is to prevent auto-play of sound (mostly videos) when users land on websites, but it ends
+      // up preventing PhET sims from being able to play sound.  To deal with this, we add a listener that can check the
+      // state of the audio context and "resume" it if necessary when the user starts interacting with the sim.  See
+      // https://github.com/phetsims/vibe/issues/32 for more information.
+      if ( audioContext.state !== 'running' ) {
+
+        Display.userGestureEmitter.addListener( function resumeAudioContext() {
+          if ( audioContext.state !== 'running' ) {
+
+            // the audio context isn't running, so tell it to resume
+            audioContext.resume().catch( function( err ) {
+              assert && assert( false, 'error when trying to resume audio context, err = ' + err );
+            } );
+          }
+          Display.userGestureEmitter.removeListener( resumeAudioContext ); // only do this once
+        } );
+      }
+    }
+    else {
+
+      // There is a different issue for audio on iOS+Safari: On this platform, we must play an audio file from a thread
+      // initiated by a user event such as touchstart before any sounds will play.  This requires the user to touch the
+      // screen before audio can be played. See
+      // http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api
+      var silence = new Sound( empty );
+      var playSilence = function() {
+        silence.play();
+        window.removeEventListener( 'touchstart', playSilence, false );
+      };
+      window.addEventListener( 'touchstart', playSilence, false );
+    }
   }
 
   return Sound;
