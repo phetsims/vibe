@@ -17,7 +17,7 @@ define( function( require ) {
   var vibe = require( 'VIBE/vibe' );
 
   // sounds
-  var empty = require( 'audio!VIBE/empty.mp3' );
+  var empty = require( 'sound!VIBE/empty.mp3' );
 
   // global property that allows all audio to be turned on/off, see #11
   var audioEnabledProperty = new Property( true );
