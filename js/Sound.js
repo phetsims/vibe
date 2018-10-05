@@ -31,6 +31,16 @@ define( function( require ) {
     audioContext = new webkitAudioContext(); // eslint-disable-line no-undef
   }
 
+  // controls volume if Web Audio API supported
+  if ( audioContext ) {
+    var gainNode = audioContext.createGain();
+    gainNode.connect( audioContext.destination );
+    gainNode.gain.setValueAtTime(
+      phet.chipper.queryParameters.audioVolume === undefined ? 1 : phet.chipper.queryParameters.audioVolume,
+      audioContext.currentTime
+    );
+  }
+
   /**
    * @param {Object} soundInfo - An object that includes *either* a url that points to the sound to be played *or* a
    * base64-encoded version of the sound data.  The former is generally used when a sim is running in RequireJS mode,
@@ -146,7 +156,7 @@ define( function( require ) {
         if ( this.audioBuffer ) {
           this.soundSource = audioContext.createBufferSource();
           this.soundSource.buffer = this.audioBuffer;
-          this.soundSource.connect( audioContext.destination );
+          this.soundSource.connect( gainNode );
 
           if ( typeof this.soundSource.start === 'function' ) {
             this.soundSource.start( 0 );
