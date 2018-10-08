@@ -35,10 +35,7 @@ define( function( require ) {
   if ( audioContext ) {
     var gainNode = audioContext.createGain();
     gainNode.connect( audioContext.destination );
-    gainNode.gain.setValueAtTime(
-      phet.chipper.queryParameters.audioVolume === undefined ? 1 : phet.chipper.queryParameters.audioVolume,
-      audioContext.currentTime
-    );
+    gainNode.gain.setValueAtTime( phet.chipper.queryParameters.audioVolume, audioContext.currentTime );
   }
 
   /**
