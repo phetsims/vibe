@@ -1,4 +1,4 @@
-// Copyright 2013-2017, University of Colorado Boulder
+// Copyright 2013-2018, University of Colorado Boulder
 
 /**
  * Type for loading and playing sounds, works on multiple platforms and supports embedded base64 data.  This uses Web
