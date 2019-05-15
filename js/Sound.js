@@ -75,7 +75,7 @@ define( function( require ) {
       supportedFormatFound = true;
     }
     else {
-      console.log( 'Warning: audio format not supported, sound will not be played.' );
+      console.warn( 'audio format not supported, sound will not be played.' );
     }
 
     // load the sound into memory
