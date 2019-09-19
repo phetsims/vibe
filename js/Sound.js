@@ -20,10 +20,10 @@ define( require => {
   const empty = require( 'sound!VIBE/empty.mp3' );
 
   // global property that allows all audio to be turned on/off, see #11
-  var audioEnabledProperty = new Property( true );
+  const audioEnabledProperty = new Property( true );
 
   // set up a single audio context that will be used by all sounds when using Web Audio API
-  var audioContext;
+  let audioContext;
   if ( 'AudioContext' in window ) {
     audioContext = new AudioContext();
   }
@@ -46,7 +46,7 @@ define( require => {
    */
   function Sound( soundInfo ) {
 
-    var self = this;
+    const self = this;
 
     // parameter checking
     if ( typeof soundInfo !== 'object' ||
@@ -55,11 +55,11 @@ define( require => {
     }
 
     this.sound = document.createElement( 'audio' );
-    var supportedFormatFound = false;
+    let supportedFormatFound = false;
 
     // Identify the audio format.  The URL is generally used when running in RequieJS mode, base64 is used when running
     // single-html-file (aka "built") simulations.
-    var audioFormat;
+    let audioFormat;
     if ( soundInfo.url ) {
       audioFormat = 'audio/' +
                     soundInfo.url.slice( soundInfo.url.lastIndexOf( '.' ) + 1,
@@ -81,15 +81,15 @@ define( require => {
     // load the sound into memory
     if ( supportedFormatFound ) {
       if ( audioContext ) {
-        var arrayBuff;
+        let arrayBuff;
 
         if ( soundInfo.base64 ) {
 
           // We're working with base64 data, so we need to decode it. The regular expression removes the mime header.
-          var soundData = ( soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' ) ).replace( new RegExp( '^.*,' ), '' );
-          var byteChars = window.atob( soundData );
-          var byteArray = new window.Uint8Array( byteChars.length );
-          for ( var j = 0; j < byteArray.length; j++ ) {
+          const soundData = ( soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' ) ).replace( new RegExp( '^.*,' ), '' );
+          const byteChars = window.atob( soundData );
+          const byteArray = new window.Uint8Array( byteChars.length );
+          for ( let j = 0; j < byteArray.length; j++ ) {
             byteArray[ j ] = byteChars.charCodeAt( j ); // need check to make sure this cast doesn't give problems?
           }
           arrayBuff = byteArray.buffer;
@@ -106,7 +106,7 @@ define( require => {
         else {
 
           // load the sound via URL
-          var request = new XMLHttpRequest();
+          const request = new XMLHttpRequest();
           request.open( 'GET', soundInfo.url, true );
           request.responseType = 'arraybuffer';
           request.onload = function() {
@@ -220,7 +220,7 @@ define( require => {
       // initiated by a user event such as touchstart before any sounds will play.  This requires the user to touch the
       // screen before audio can be played. See
       // http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api
-      var silence = new Sound( empty );
+      const silence = new Sound( empty );
       var playSilence = function() {
         silence.play();
         window.removeEventListener( 'touchstart', playSilence, false );

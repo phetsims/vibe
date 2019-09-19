@@ -16,14 +16,14 @@ define( require => {
   // strings
   const vibeTitleString = require( 'string!VIBE/vibe.title' );
 
-  var simOptions = {
+  const simOptions = {
     credits: {
       leadDesign: 'PhET'
     }
   };
 
   SimLauncher.launch( function() {
-    var sim = new Sim( vibeTitleString, [ new VibeScreen() ], simOptions );
+    const sim = new Sim( vibeTitleString, [ new VibeScreen() ], simOptions );
     sim.start();
   } );
 } );
