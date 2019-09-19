@@ -5,16 +5,16 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var Sim = require( 'JOIST/Sim' );
-  var SimLauncher = require( 'JOIST/SimLauncher' );
-  var VibeScreen = require( 'VIBE/vibe/VibeScreen' );
+  const Sim = require( 'JOIST/Sim' );
+  const SimLauncher = require( 'JOIST/SimLauncher' );
+  const VibeScreen = require( 'VIBE/vibe/VibeScreen' );
 
   // strings
-  var vibeTitleString = require( 'string!VIBE/vibe.title' );
+  const vibeTitleString = require( 'string!VIBE/vibe.title' );
 
   var simOptions = {
     credits: {

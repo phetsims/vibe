@@ -4,17 +4,17 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var inherit = require( 'PHET_CORE/inherit' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
-  var ScreenView = require( 'JOIST/ScreenView' );
-  var Sound = require( 'VIBE/Sound' );
-  var Text = require( 'SCENERY/nodes/Text' );
-  var vibe = require( 'VIBE/vibe' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
+  const ScreenView = require( 'JOIST/ScreenView' );
+  const Sound = require( 'VIBE/Sound' );
+  const Text = require( 'SCENERY/nodes/Text' );
+  const vibe = require( 'VIBE/vibe' );
 
   // constants
   var BUTTON_FONT = new PhetFont( { size: 20 } );

@@ -6,18 +6,18 @@
  * load audio data from embedded data URIs.  This was occurring in mid-September 2013.  Simplification may be possible
  * if the cross-domain issue goes away at some point in the future.
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var Display = require( 'SCENERY/display/Display' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var platform = require( 'PHET_CORE/platform' );
-  var Property = require( 'AXON/Property' );
-  var vibe = require( 'VIBE/vibe' );
+  const Display = require( 'SCENERY/display/Display' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const platform = require( 'PHET_CORE/platform' );
+  const Property = require( 'AXON/Property' );
+  const vibe = require( 'VIBE/vibe' );
 
   // sounds
-  var empty = require( 'sound!VIBE/empty.mp3' );
+  const empty = require( 'sound!VIBE/empty.mp3' );
 
   // global property that allows all audio to be turned on/off, see #11
   var audioEnabledProperty = new Property( true );
