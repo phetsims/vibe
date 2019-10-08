@@ -182,44 +182,48 @@ define( function( require ) {
     audioEnabledProperty: audioEnabledProperty
   } );
 
-  // Below is some platform-specific code for handling a number of issues related to audio.  It may be possible to
-  // remove some or all of this as Web Audio becomes more consistently implemented.
+  // If an audio context was created, it means that we are using Web Audio.  Many browsers have adopted policies to
+  // prevent a web page from being able to play a sound before a user interacts with it, so the following code was
+  // necessary to essentially detect when the user starts interacting with the sim and enable the audio context, which
+  // in turn enables the ability to produce sound.
   if ( audioContext ) {
 
-    if ( !platform.mobileSafari ) {
+    // function to remove the listeners, used to avoid code duplication
+    var removeUserInteractionListeners = function(){
+      window.removeEventListener( 'touchstart', resumeAudioContext, false );
+      if ( Display.userGestureEmitter.hasListener( resumeAudioContext ) ) {
+        Display.userGestureEmitter.removeListener( resumeAudioContext );
+      }
+    };
 
-      // In some browsers the audio context is not allowed to run before the user interacts with the simulation.  The
-      // motivation for this is to prevent auto-play of sound (mostly videos) when users land on websites, but it ends
-      // up preventing PhET sims from being able to play sound.  To deal with this, we add a listener that can check the
-      // state of the audio context and "resume" it if necessary when the user starts interacting with the sim.  See
-      // https://github.com/phetsims/vibe/issues/32 for more information.
+    // listener that resumes the audio context
+    var resumeAudioContext = function(){
+
       if ( audioContext.state !== 'running' ) {
 
-        Display.userGestureEmitter.addListener( function resumeAudioContext() {
-          if ( audioContext.state !== 'running' ) {
-
-            // the audio context isn't running, so tell it to resume
-            audioContext.resume().catch( function( err ) {
-              assert && assert( false, 'error when trying to resume audio context, err = ' + err );
-            } );
-          }
-          Display.userGestureEmitter.removeListener( resumeAudioContext ); // only do this once
-        } );
+        // tell the audio context to resume
+        audioContext.resume()
+          .then( function(){
+            removeUserInteractionListeners();
+          } )
+          .catch( function(){
+            var errorMessage = 'error when trying to resume audio context, err = ' + err;
+            console.error( errorMessage );
+            assert && alert( errorMessage );
+          } );
       }
-    }
-    else {
+      else {
 
-      // There is a different issue for audio on iOS+Safari: On this platform, we must play an audio file from a thread
-      // initiated by a user event such as touchstart before any sounds will play.  This requires the user to touch the
-      // screen before audio can be played. See
-      // http://stackoverflow.com/questions/12517000/no-sound-on-ios-6-web-audio-api
-      var silence = new Sound( empty );
-      var playSilence = function() {
-        silence.play();
-        window.removeEventListener( 'touchstart', playSilence, false );
-      };
-      window.addEventListener( 'touchstart', playSilence, false );
-    }
+        // audio context is already running, no need to listen anymore
+        removeUserInteractionListeners();
+      }
+    };
+
+    // listen for a touchstart - this only works to resume the audio context on iOS devices (as of this writing)
+    window.addEventListener( 'touchstart', resumeAudioContext, false );
+
+    // listen for other user gesture events
+    Display.userGestureEmitter.addListener( resumeAudioContext );
   }
 
   return Sound;
