@@ -12,12 +12,8 @@ define( function( require ) {
   // modules
   var Display = require( 'SCENERY/display/Display' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var platform = require( 'PHET_CORE/platform' );
   var Property = require( 'AXON/Property' );
   var vibe = require( 'VIBE/vibe' );
-
-  // sounds
-  var empty = require( 'audio!VIBE/empty.mp3' );
 
   // global property that allows all audio to be turned on/off, see #11
   var audioEnabledProperty = new Property( true );
@@ -213,7 +209,7 @@ define( function( require ) {
           .then( function(){
             removeUserInteractionListeners();
           } )
-          .catch( function(){
+          .catch( function( err ){
             var errorMessage = 'error when trying to resume audio context, err = ' + err;
             console.error( errorMessage );
             assert && alert( errorMessage );
