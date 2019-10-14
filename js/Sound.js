@@ -13,8 +13,6 @@ define( function( require ) {
 
   // modules
   var Display = require( 'SCENERY/display/Display' );
-  var platform = require( 'PHET_CORE/platform' );
-  var empty = require( 'audio!VIBE/empty.mp3' );
   var Property = require( 'AXON/Property' );
   var vibe = require( 'VIBE/vibe' );
 
@@ -209,7 +207,7 @@ define( function( require ) {
           .then( function(){
             removeUserInteractionListeners();
           } )
-          .catch( function(){
+          .catch( function( err ){
             var errorMessage = 'error when trying to resume audio context, err = ' + err;
             console.error( errorMessage );
             assert && alert( errorMessage );
