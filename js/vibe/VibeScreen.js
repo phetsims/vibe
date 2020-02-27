@@ -4,27 +4,24 @@
  * Main screen for the test/demo harness for the 'vibe' repo, which is an audio library.
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const inherit = require( 'PHET_CORE/inherit' );
-  const Screen = require( 'JOIST/Screen' );
-  const vibe = require( 'VIBE/vibe' );
-  const VibeScreenView = require( 'VIBE/vibe/view/VibeScreenView' );
+import Screen from '../../../joist/js/Screen.js';
+import inherit from '../../../phet-core/js/inherit.js';
+import vibe from '../vibe.js';
+import VibeScreenView from './view/VibeScreenView.js';
 
-  /**
-   * @constructor
-   */
-  function VibeScreen() {
+/**
+ * @constructor
+ */
+function VibeScreen() {
 
-    Screen.call( this,
-      function() { return {}; },
-      function( model ) { return new VibeScreenView( model ); }
-    );
-  }
+  Screen.call( this,
+    function() { return {}; },
+    function( model ) { return new VibeScreenView( model ); }
+  );
+}
 
-  vibe.register( 'VibeScreen', VibeScreen );
+vibe.register( 'VibeScreen', VibeScreen );
 
-  return inherit( Screen, VibeScreen );
-} );
+inherit( Screen, VibeScreen );
+export default VibeScreen;
