@@ -90,10 +90,4 @@ function VibeScreenView( vibeModel ) {
 
 vibe.register( 'VibeScreenView', VibeScreenView );
 
-export default inherit( ScreenView, VibeScreenView, {
-
-  //TODO Called by the animation loop. Optional, so if your view has no animation, please delete this.
-  step: function( dt ) {
-    //TODO Handle view animation here.
-  }
-} );
+export default inherit( ScreenView, VibeScreenView );
