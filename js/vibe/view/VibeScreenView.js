@@ -89,5 +89,5 @@ function VibeScreenView( vibeModel ) {
 }
 
 vibe.register( 'VibeScreenView', VibeScreenView );
-
-export default inherit( ScreenView, VibeScreenView );
+inherit( ScreenView, VibeScreenView );
+export default VibeScreenView;
