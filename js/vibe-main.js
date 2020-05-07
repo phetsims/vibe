@@ -7,7 +7,7 @@
  */
 
 import Sim from '../../joist/js/Sim.js';
-import SimLauncher from '../../joist/js/SimLauncher.js';
+import simLauncher from '../../joist/js/simLauncher.js';
 import vibeStrings from './vibeStrings.js';
 import VibeScreen from './vibe/VibeScreen.js';
 
@@ -19,7 +19,7 @@ const simOptions = {
   }
 };
 
-SimLauncher.launch( function() {
+simLauncher.launch( function() {
   const sim = new Sim( vibeTitleString, [ new VibeScreen() ], simOptions );
   sim.start();
 } );
