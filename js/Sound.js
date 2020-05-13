@@ -1,192 +1,68 @@
 // Copyright 2013-2020, University of Colorado Boulder
 
 /**
- * Type for loading and playing sounds, works on multiple platforms and supports embedded base64 data.  This uses Web
- * Audio when available, primarily because the webkit platforms were failing with cross-domain errors when attempting to
- * load audio data from embedded data URIs.  This was occurring in mid-September 2013.  Simplification may be possible
- * if the cross-domain issue goes away at some point in the future.
+ * Type for loading and playing sounds.
+ * @author John Blanco (PhET Interactive Simulations)
  */
 
 import Property from '../../axon/js/Property.js';
-import inherit from '../../phet-core/js/inherit.js';
 import Display from '../../scenery/js/display/Display.js';
+import audioContextStateChangeMonitor from '../../tambo/js/audioContextStateChangeMonitor.js';
+import phetAudioContext from '../../tambo/js/phetAudioContext.js';
+import SoundClip from '../../tambo/js/sound-generators/SoundClip.js';
 import vibe from './vibe.js';
 
 // global property that allows all audio to be turned on/off, see #11
 const audioEnabledProperty = new Property( true );
 
-// set up a single audio context that will be used by all sounds when using Web Audio API
-let audioContext;
-if ( 'AudioContext' in window ) {
-  audioContext = new AudioContext();
-}
-else if ( 'webkitAudioContext' in window ) {
-  audioContext = new webkitAudioContext(); // eslint-disable-line no-undef
-}
+// create a gain node that will be shared by all sounds and can be used to set the output level for all sounds
+const sharedGainNode = phetAudioContext.createGain();
+sharedGainNode.connect( phetAudioContext.destination );
+sharedGainNode.gain.setValueAtTime( phet.chipper.queryParameters.audioVolume, phetAudioContext.currentTime );
 
-// controls volume if Web Audio API supported
-if ( audioContext ) {
-  var gainNode = audioContext.createGain();
-  gainNode.connect( audioContext.destination );
-  gainNode.gain.setValueAtTime( phet.chipper.queryParameters.audioVolume, audioContext.currentTime );
-}
-
-/**
- * @param {Object} soundInfo - An object that includes *either* a url that points to the sound to be played *or* a
- * base64-encoded version of the sound data.  The former is generally used when a sim is running in RequireJS mode,
- * the latter is used in built versions.
- * @constructor
- */
-function Sound( soundInfo ) {
-
-  const self = this;
-
-  // parameter checking
-  if ( typeof soundInfo !== 'object' ||
-       ( typeof soundInfo.base64 === 'undefined' && typeof soundInfo.url === 'undefined' ) ) {
-    throw new Error( 'Error with soundInfo object: Does not contain a necessary value.' );
-  }
-
-  this.sound = document.createElement( 'audio' );
-  let supportedFormatFound = false;
-
-  // Identify the audio format.  The URL is generally used when running in RequieJS mode, base64 is used when running
-  // single-html-file (aka "built") simulations.
-  let audioFormat;
-  if ( soundInfo.url ) {
-    audioFormat = 'audio/' +
-                  soundInfo.url.slice( soundInfo.url.lastIndexOf( '.' ) + 1,
-                    soundInfo.url.lastIndexOf( '?' ) >= 0 ? soundInfo.url.lastIndexOf( '?' ) : soundInfo.url.length
-                  );
-  }
-  else {
-    audioFormat = soundInfo.base64.slice( soundInfo.base64.indexOf( ':' ) + 1, soundInfo.base64.indexOf( ';' ) );
-  }
-
-  // determine whether this audio format is supported (doesn't exist for phantomjs, which is used in automated testing)
-  if ( this.sound.canPlayType && this.sound.canPlayType( audioFormat ) ) {
-    supportedFormatFound = true;
-  }
-  else {
-    console.warn( 'audio format not supported, sound will not be played.' );
-  }
-
-  // load the sound into memory
-  if ( supportedFormatFound ) {
-    if ( audioContext ) {
-      let arrayBuff;
-
-      if ( soundInfo.base64 ) {
-
-        // We're working with base64 data, so we need to decode it. The regular expression removes the mime header.
-        const soundData = ( soundInfo.base64 ? soundInfo.base64 : this.sound.getAttribute( 'src' ) ).replace( new RegExp( '^.*,' ), '' );
-        const byteChars = window.atob( soundData );
-        const byteArray = new window.Uint8Array( byteChars.length );
-        for ( let j = 0; j < byteArray.length; j++ ) {
-          byteArray[ j ] = byteChars.charCodeAt( j ); // need check to make sure this cast doesn't give problems?
-        }
-        arrayBuff = byteArray.buffer;
-
-        audioContext.decodeAudioData( arrayBuff,
-          function( audioData ) {
-            self.audioBuffer = audioData;
-          },
-          function() {
-            console.log( 'Error: Unable to decode audio data.' );
-          }
-        );
-      }
-      else {
-
-        // load the sound via URL
-        const request = new XMLHttpRequest();
-        request.open( 'GET', soundInfo.url, true );
-        request.responseType = 'arraybuffer';
-        request.onload = function() {
-
-          // decode the audio data asynchronously
-          audioContext.decodeAudioData( request.response,
-            function( audioData ) {
-              self.audioBuffer = audioData;
-            },
-            function() { console.log( 'Error loading and decoding sound, sound name: ' + soundInfo.url ); }
-          );
-        };
-        request.onerror = function() {
-          console.log( 'Error occurred on attempt to load sound data.' );
-        };
-        request.send();
-      }
-    }
-    else {
-
-      // web Audio API is not available, so insert the sound into the DOM and use HTML5 audio
-      this.sound.setAttribute( 'src', soundInfo.base64 ? soundInfo.base64 : soundInfo.url );
-      this.sound.load();
-    }
-  }
-}
-
-vibe.register( 'Sound', Sound );
-
-inherit( Object, Sound, {
+class Sound {
 
   /**
-   * Plays the sound using the Web Audio API if available or HTML5 audio if not.
+   * @param {WrappedAudioBuffer} soundDefinition - a wrapped audio buffer, generally obtained through loading a
+   * sound module
+   */
+  constructor( soundDefinition ) {
+
+    // Note to maintainers: This was basically gutted and replaces with objects from the tambo library in May 2020 in
+    // order to support a new way of modularizing sounds.  See https://github.com/phetsims/tambo/issues/100 and
+    // https://github.com/phetsims/vibe/issues/33 for more information.
+    this.soundClip = new SoundClip( soundDefinition );
+
+    this.soundClip.masterGainNode.connect( sharedGainNode );
+  }
+
+  /**
+   * play the sound if audio is enabled
    * @public
    */
-  play: function() {
-    if ( !Sound.audioEnabledProperty.get() ) {
-      return;
-    }
-    if ( audioContext ) {
-
-      // Use the Web Audio API.  The following 'if' clause is necessary to be sure that the audio has finished
-      // loading, see https://github.com/phetsims/vibe/issues/20.
-      if ( this.audioBuffer ) {
-        this.soundSource = audioContext.createBufferSource();
-        this.soundSource.buffer = this.audioBuffer;
-        this.soundSource.connect( gainNode );
-
-        if ( typeof this.soundSource.start === 'function' ) {
-          this.soundSource.start( 0 );
-        }
-        else if ( typeof this.soundSource.noteOn === 'function' ) {
-          this.soundSource.noteOn( 0 );
-        }
-      }
-    }
-    else {
-
-      // Use the HTML5 API (doesn't exist for phantomjs)
-      this.sound.play && this.sound.play();
-    }
-  },
-
-  stop: function() {
-    if ( audioContext && this.soundSource ) {
-
-      // use Web Audio API
-      this.soundSource.stop();
-    }
-    else {
-
-      // use HTML5 audio (doesn't exist for phantomjs)
-      this.sound.pause && this.sound.pause();
-      this.sound.currentTime = 0;
+  play() {
+    if ( audioEnabledProperty.get() ) {
+      this.soundClip.play();
     }
   }
-}, {
 
-  // @public, @static, global control for audio on/off
-  audioEnabledProperty: audioEnabledProperty
-} );
+  /**
+   * stop play of the sound
+   * @public
+   */
+  stop() {
+    this.soundClip.stop();
+  }
+}
 
-// If an audio context was created, it means that we are using Web Audio.  Many browsers have adopted policies to
-// prevent a web page from being able to play a sound before a user interacts with it, so the following code was
-// necessary to essentially detect when the user starts interacting with the sim and enable the audio context, which
-// in turn enables the ability to produce sound.
-if ( audioContext ) {
+// statics
+Sound.audioEnabledProperty = audioEnabledProperty;
+
+// Handle the audio context state, both when changes occur and when it is initially suspended.  As of this writing (Feb
+// 2019), there are some differences in how the audio context state behaves on different platforms, so the code monitors
+// different events and states to keep the audio context running.  As the behavior of the audio context becomes more
+// consistent across browsers, it may be possible to simplify this.
+if ( !phetAudioContext.isStubbed ) {
 
   // function to remove the listeners, used to avoid code duplication
   const removeUserInteractionListeners = () => {
@@ -199,11 +75,14 @@ if ( audioContext ) {
   // listener that resumes the audio context
   const resumeAudioContext = () => {
 
-    if ( audioContext.state !== 'running' ) {
+    if ( phetAudioContext.state !== 'running' ) {
+
+      phet.log && phet.log( 'audio context not running, attempting to resume, state = ' + phetAudioContext.state );
 
       // tell the audio context to resume
-      audioContext.resume()
+      phetAudioContext.resume()
         .then( () => {
+          phet.log && phet.log( 'resume appears to have succeeded, phetAudioContext.state = ' + phetAudioContext.state );
           removeUserInteractionListeners();
         } )
         .catch( err => {
@@ -224,6 +103,41 @@ if ( audioContext ) {
 
   // listen for other user gesture events
   Display.userGestureEmitter.addListener( resumeAudioContext );
+
+  // During testing, several use cases were found where the audio context state changes to something other than
+  // the "running" state while the sim is in use (generally either "suspended" or "interrupted", depending on the
+  // browser).  The following code is intended to handle this situation by trying to resume it right away.  GitHub
+  // issues with details about why this is necessary are:
+  // - https://github.com/phetsims/tambo/issues/58
+  // - https://github.com/phetsims/tambo/issues/59
+  // - https://github.com/phetsims/fractions-common/issues/82
+  // - https://github.com/phetsims/friction/issues/173
+  // - https://github.com/phetsims/resistance-in-a-wire/issues/190
+  // - https://github.com/phetsims/tambo/issues/90
+  let previousAudioContextState = phetAudioContext.state;
+  audioContextStateChangeMonitor.addStateChangeListener( phetAudioContext, state => {
+
+    phet.log && phet.log(
+      'audio context state changed, old state = ' +
+      previousAudioContextState +
+      ', new state = ' +
+      state +
+      ', audio context time = ' +
+      phetAudioContext.currentTime
+    );
+
+    if ( state !== 'running' ) {
+
+      // add a listener that will resume the audio context on the next touchstart
+      window.addEventListener( 'touchstart', resumeAudioContext, false );
+
+      // listen for other user gesture events too
+      Display.userGestureEmitter.addListener( resumeAudioContext );
+    }
+
+    previousAudioContextState = state;
+  } );
 }
 
+vibe.register( 'Sound', Sound );
 export default Sound;
