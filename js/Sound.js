@@ -33,6 +33,7 @@ class Sound {
     // https://github.com/phetsims/vibe/issues/33 for more information.
     this.soundClip = new SoundClip( soundDefinition );
 
+    // connect the sound clip directly to the output gain node
     this.soundClip.masterGainNode.connect( sharedGainNode );
   }
 
