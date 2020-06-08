@@ -14,8 +14,6 @@ import relativePathSound from '../../../sounds/relative-path-sound_mp3.js';
 import Sound from '../../Sound.js';
 import vibe from '../../vibe.js';
 
-// sounds
-
 // constants
 const BUTTON_FONT = new PhetFont( { size: 20 } );
 const TEST_SOUND = new Sound( relativePathSound );
