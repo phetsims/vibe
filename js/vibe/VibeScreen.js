@@ -6,22 +6,19 @@
  */
 
 import Screen from '../../../joist/js/Screen.js';
-import inherit from '../../../phet-core/js/inherit.js';
 import vibe from '../vibe.js';
 import VibeScreenView from './view/VibeScreenView.js';
 
-/**
- * @constructor
- */
-function VibeScreen() {
+class VibeScreen extends Screen {
 
-  Screen.call( this,
-    function() { return {}; },
-    function( model ) { return new VibeScreenView( model ); }
-  );
+  constructor() {
+
+    super(
+      function() { return {}; },
+      function( model ) { return new VibeScreenView( model ); }
+    );
+  }
 }
 
 vibe.register( 'VibeScreen', VibeScreen );
-
-inherit( Screen, VibeScreen );
 export default VibeScreen;
