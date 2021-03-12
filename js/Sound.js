@@ -78,16 +78,16 @@ if ( !phetAudioContext.isStubbed ) {
 
     if ( phetAudioContext.state !== 'running' ) {
 
-      phet.log && phet.log( 'audio context not running, attempting to resume, state = ' + phetAudioContext.state );
+      phet.log && phet.log( `audio context not running, attempting to resume, state = ${phetAudioContext.state}` );
 
       // tell the audio context to resume
       phetAudioContext.resume()
         .then( () => {
-          phet.log && phet.log( 'resume appears to have succeeded, phetAudioContext.state = ' + phetAudioContext.state );
+          phet.log && phet.log( `resume appears to have succeeded, phetAudioContext.state = ${phetAudioContext.state}` );
           removeUserInteractionListeners();
         } )
         .catch( err => {
-          const errorMessage = 'error when trying to resume audio context, err = ' + err;
+          const errorMessage = `error when trying to resume audio context, err = ${err}`;
           console.error( errorMessage );
           assert && alert( errorMessage );
         } );
@@ -119,12 +119,12 @@ if ( !phetAudioContext.isStubbed ) {
   audioContextStateChangeMonitor.addStateChangeListener( phetAudioContext, state => {
 
     phet.log && phet.log(
-      'audio context state changed, old state = ' +
-      previousAudioContextState +
-      ', new state = ' +
-      state +
-      ', audio context time = ' +
-      phetAudioContext.currentTime
+      `audio context state changed, old state = ${
+      previousAudioContextState
+      }, new state = ${
+      state
+      }, audio context time = ${
+      phetAudioContext.currentTime}`
     );
 
     if ( state !== 'running' ) {
