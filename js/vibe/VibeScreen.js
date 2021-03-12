@@ -14,8 +14,10 @@ class VibeScreen extends Screen {
   constructor() {
 
     super(
-      function() { return {}; },
-      function( model ) { return new VibeScreenView( model ); }
+      () => {
+        return {};
+      },
+      model => new VibeScreenView( model )
     );
   }
 }

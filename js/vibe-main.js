@@ -19,7 +19,7 @@ const simOptions = {
   }
 };
 
-simLauncher.launch( function() {
+simLauncher.launch( () => {
   const sim = new Sim( vibeTitleString, [ new VibeScreen() ], simOptions );
   sim.start();
 } );
