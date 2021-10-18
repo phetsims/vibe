@@ -18,7 +18,11 @@ const audioEnabledProperty = new Property( true );
 // create a gain node that will be shared by all sounds and can be used to set the output level for all sounds
 const sharedGainNode = phetAudioContext.createGain();
 sharedGainNode.connect( phetAudioContext.destination );
-sharedGainNode.gain.setValueAtTime( phet.chipper.queryParameters.audioVolume, phetAudioContext.currentTime );
+
+sharedGainNode.gain.setValueAtTime(
+  phet.chipper.queryParameters.audio === 'enabled' ? 1 : 0,
+  phetAudioContext.currentTime
+);
 
 class Sound {
 
