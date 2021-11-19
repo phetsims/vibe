@@ -3,11 +3,17 @@
 /**
  * Auto-generated from modulify, DO NOT manually modify.
  */
-
+/* eslint-disable */
 import getStringModule from '../../chipper/js/getStringModule.js';
 import vibe from './vibe.js';
 
-const vibeStrings = getStringModule( 'VIBE' );
+type StringsType = {
+  'vibe': {
+    'title': string
+  }
+};
+
+const vibeStrings = getStringModule( 'VIBE' ) as StringsType;
 
 vibe.register( 'vibeStrings', vibeStrings );
 
