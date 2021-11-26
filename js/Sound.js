@@ -6,7 +6,7 @@
  */
 
 import Property from '../../axon/js/Property.js';
-import Display from '../../scenery/js/display/Display.js';
+import { Display } from '../../scenery/js/imports.js';
 import audioContextStateChangeMonitor from '../../tambo/js/audioContextStateChangeMonitor.js';
 import phetAudioContext from '../../tambo/js/phetAudioContext.js';
 import SoundClip from '../../tambo/js/sound-generators/SoundClip.js';
