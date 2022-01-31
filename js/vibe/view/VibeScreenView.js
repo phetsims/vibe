@@ -9,13 +9,13 @@ import ScreenView from '../../../../joist/js/ScreenView.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import { Text } from '../../../../scenery/js/imports.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
-import relativePathSound from '../../../sounds/relative-path-sound_mp3.js';
+import relativePathSound_mp3 from '../../../sounds/relativePathSound_mp3.js';
 import Sound from '../../Sound.js';
 import vibe from '../../vibe.js';
 
 // constants
 const BUTTON_FONT = new PhetFont( { size: 20 } );
-const TEST_SOUND = new Sound( relativePathSound );
+const TEST_SOUND = new Sound( relativePathSound_mp3 );
 
 class VibeScreenView extends ScreenView {
 
