@@ -9,7 +9,7 @@ import vibe from './vibe.js';
 
 type StringsType = {
   'vibe': {
-    'title': string
+    'title': string;
   }
 };
 
