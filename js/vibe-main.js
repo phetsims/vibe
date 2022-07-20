@@ -8,8 +8,8 @@
 
 import Sim from '../../joist/js/Sim.js';
 import simLauncher from '../../joist/js/simLauncher.js';
-import vibeStrings from './vibeStrings.js';
 import VibeScreen from './vibe/VibeScreen.js';
+import vibeStrings from './vibeStrings.js';
 
 const vibeTitleString = vibeStrings.vibe.title;
 
