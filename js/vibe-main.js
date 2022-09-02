@@ -11,7 +11,7 @@ import simLauncher from '../../joist/js/simLauncher.js';
 import VibeScreen from './vibe/VibeScreen.js';
 import vibeStrings from './vibeStrings.js';
 
-const vibeTitleString = vibeStrings.vibe.title;
+const vibeTitleStringProperty = vibeStrings.vibe.titleStringProperty;
 
 const simOptions = {
   credits: {
@@ -20,6 +20,6 @@ const simOptions = {
 };
 
 simLauncher.launch( () => {
-  const sim = new Sim( vibeTitleString, [ new VibeScreen() ], simOptions );
+  const sim = new Sim( vibeTitleStringProperty, [ new VibeScreen() ], simOptions );
   sim.start();
 } );
