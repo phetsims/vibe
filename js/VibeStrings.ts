@@ -15,8 +15,8 @@ type StringsType = {
   }
 };
 
-const vibeStrings = getStringModule( 'VIBE' ) as StringsType;
+const VibeStrings = getStringModule( 'VIBE' ) as StringsType;
 
-vibe.register( 'vibeStrings', vibeStrings );
+vibe.register( 'VibeStrings', VibeStrings );
 
-export default vibeStrings;
+export default VibeStrings;
