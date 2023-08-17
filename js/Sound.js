@@ -38,7 +38,7 @@ class Sound {
     this.soundClip = new SoundClip( soundDefinition );
 
     // connect the sound clip directly to the output gain node
-    this.soundClip.masterGainNode.connect( sharedGainNode );
+    this.soundClip.mainGainNode.connect( sharedGainNode );
   }
 
   /**
