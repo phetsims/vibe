@@ -6,7 +6,7 @@
  */
 
 import Property from '../../axon/js/Property.js';
-import { Display } from '../../scenery/js/imports.js';
+import { DisplayGlobals } from '../../scenery/js/imports.js';
 import audioContextStateChangeMonitor from '../../tambo/js/audioContextStateChangeMonitor.js';
 import phetAudioContext from '../../tambo/js/phetAudioContext.js';
 import SoundClip from '../../tambo/js/sound-generators/SoundClip.js';
@@ -72,8 +72,8 @@ if ( !phetAudioContext.isStubbed ) {
   // function to remove the listeners, used to avoid code duplication
   const removeUserInteractionListeners = () => {
     window.removeEventListener( 'touchstart', resumeAudioContext, false );
-    if ( Display.userGestureEmitter.hasListener( resumeAudioContext ) ) {
-      Display.userGestureEmitter.removeListener( resumeAudioContext );
+    if ( DisplayGlobals.userGestureEmitter.hasListener( resumeAudioContext ) ) {
+      DisplayGlobals.userGestureEmitter.removeListener( resumeAudioContext );
     }
   };
 
@@ -107,7 +107,7 @@ if ( !phetAudioContext.isStubbed ) {
   window.addEventListener( 'touchstart', resumeAudioContext, false );
 
   // listen for other user gesture events
-  Display.userGestureEmitter.addListener( resumeAudioContext );
+  DisplayGlobals.userGestureEmitter.addListener( resumeAudioContext );
 
   // During testing, several use cases were found where the audio context state changes to something other than
   // the "running" state while the sim is in use (generally either "suspended" or "interrupted", depending on the
@@ -137,7 +137,7 @@ if ( !phetAudioContext.isStubbed ) {
       window.addEventListener( 'touchstart', resumeAudioContext, false );
 
       // listen for other user gesture events too
-      Display.userGestureEmitter.addListener( resumeAudioContext );
+      DisplayGlobals.userGestureEmitter.addListener( resumeAudioContext );
     }
 
     previousAudioContextState = state;
