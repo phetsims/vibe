@@ -7,7 +7,7 @@
 
 import ScreenView from '../../../../joist/js/ScreenView.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
-import { Text } from '../../../../scenery/js/imports.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
 import relativePathSound_mp3 from '../../../sounds/relativePathSound_mp3.js';
 import Sound from '../../Sound.js';
