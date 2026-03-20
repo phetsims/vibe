@@ -10,7 +10,6 @@ import DisplayGlobals from '../../scenery/js/display/DisplayGlobals.js';
 import audioContextStateChangeMonitor from '../../tambo/js/audioContextStateChangeMonitor.js';
 import phetAudioContext from '../../tambo/js/phetAudioContext.js';
 import SoundClip from '../../tambo/js/sound-generators/SoundClip.js';
-import vibe from './vibe.js';
 
 // global property that allows all audio to be turned on/off, see #11
 const audioEnabledProperty = new Property( true );
@@ -144,5 +143,4 @@ if ( !phetAudioContext.isStubbed ) {
   } );
 }
 
-vibe.register( 'Sound', Sound );
 export default Sound;

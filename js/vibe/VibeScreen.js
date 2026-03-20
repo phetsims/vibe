@@ -6,7 +6,6 @@
  */
 
 import Screen from '../../../joist/js/Screen.js';
-import vibe from '../vibe.js';
 import VibeScreenView from './view/VibeScreenView.js';
 
 class VibeScreen extends Screen {
@@ -22,5 +21,4 @@ class VibeScreen extends Screen {
   }
 }
 
-vibe.register( 'VibeScreen', VibeScreen );
 export default VibeScreen;

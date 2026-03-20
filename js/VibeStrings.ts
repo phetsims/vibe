@@ -20,6 +20,4 @@ type StringsType = {
 
 const VibeStrings = getStringModule( 'VIBE' ) as StringsType;
 
-vibe.register( 'VibeStrings', VibeStrings );
-
 export default VibeStrings;

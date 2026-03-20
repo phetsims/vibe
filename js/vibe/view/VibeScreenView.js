@@ -11,7 +11,6 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
 import relativePathSound_mp3 from '../../../sounds/relativePathSound_mp3.js';
 import Sound from '../../Sound.js';
-import vibe from '../../vibe.js';
 
 // constants
 const BUTTON_FONT = new PhetFont( { size: 20 } );
@@ -70,5 +69,4 @@ class VibeScreenView extends ScreenView {
   }
 }
 
-vibe.register( 'VibeScreenView', VibeScreenView );
 export default VibeScreenView;
