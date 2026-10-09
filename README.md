@@ -1,18 +1,24 @@
-vibe
-====
+# ⚠️ This Repository Is No Longer Maintained
 
-Library for handling audio for PhET simulations. Provides cross-platform support and enables usage of base64 audio
-embedded in an HTML document.
+This repository is **out of date and no longer actively maintained.**
 
-By PhET Interactive Simulations
-https://phet.colorado.edu/
+As part of our ongoing effort to better sustain the PhET project, we have restructured our library and consolidated our individual repositories into a single **monorepo**.
 
-### Documentation
+## Current status
 
-The [PhET Development Overview](https://github.com/phetsims/phet-info/blob/main/doc/phet-development-overview.md) is the
-most complete guide to PhET Simulation Development. This guide includes how to obtain simulation code and its
-dependencies, notes about architecture & design, how to test and build the sims, as well as other important information.
+As part of this restructuring, we are currently reviewing what to make publicly available. The monorepo is **not publicly available at this time**, and we appreciate your patience while we work through this to keep the PhET project sustainable.
 
-### License
+In the meantime, please note that the code here is outdated. Issues and pull requests opened against this repository may not receive a response.
 
-See the [license](LICENSE)
+## Why the change?
+
+Moving to a monorepo allows us to:
+
+- Coordinate changes across the library more easily
+- Simplify dependency management and versioning
+- Reduce maintenance overhead so we can focus on the project itself
+- Provide a more consistent experience for contributors and users
+
+## Thank you
+
+Thank you for your patience while we restructure our library to better sustain the PhET project. We appreciate your continued interest and support. You can access all of our free sims on our website: https://phet.colorado.edu/
